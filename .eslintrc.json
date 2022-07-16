@@ -52,6 +52,14 @@
     "@typescript-eslint/no-unnecessary-condition": [
       "warn"
     ],
+    "@typescript-eslint/strict-boolean-expressions": [
+      "error",
+      {
+        "allowString": false,
+        "allowNumber": false,
+        "allowNullableObject": false
+      }
+    ],
     "react/display-name": [
       "off"
     ],
@@ -96,28 +104,5 @@
     "react": {
       "version": "detect"
     }
-  },
-  "overrides": [
-    {
-      "files": [
-        "**/*.ts",
-        "**/*.tsx"
-      ],
-      "parserOptions": {
-        "project": [
-          "tsconfig.json"
-        ]
-      },
-      "rules": {
-        "@typescript-eslint/strict-boolean-expressions": [
-          "error",
-          {
-            "allowString": false,
-            "allowNumber": false,
-            "allowNullableObject": false
-          }
-        ]
-      }
-    }
-  ]
+  }
 }
