@@ -1,13 +1,14 @@
-import { useState, useCallback, useEffect } from 'react';
-import { ZoomClient } from '../../../index-types';
+import { useCallback, useEffect, useState } from "react";
+
+import { ZoomClient } from "../../../index-types";
 export function useActiveVideo(zmClient: ZoomClient) {
   const [activeVideo, setActiveVideo] = useState<number>(0);
   const [activeSpeaker, setActiveSpeaker] = useState<number>(0);
   const onVideoActiveChange = useCallback((payload) => {
     const { state, userId } = payload;
-    if (state === 'Active') {
+    if (state === "Active") {
       setActiveVideo(userId);
-    } else if (state === 'Inactive') {
+    } else if (state === "Inactive") {
       setActiveVideo(0);
     }
   }, []);
@@ -18,11 +19,11 @@ export function useActiveVideo(zmClient: ZoomClient) {
     }
   }, []);
   useEffect(() => {
-    zmClient.on('video-active-change', onVideoActiveChange);
-    zmClient.on('active-speaker', onActiveSpeakerChange);
+    zmClient.on("video-active-change", onVideoActiveChange);
+    zmClient.on("active-speaker", onActiveSpeakerChange);
     return () => {
-      zmClient.off('video-active-change', onVideoActiveChange);
-      zmClient.off('active-speaker', onActiveSpeakerChange);
+      zmClient.off("video-active-change", onVideoActiveChange);
+      zmClient.off("active-speaker", onActiveSpeakerChange);
     };
   }, [zmClient, onVideoActiveChange, onActiveSpeakerChange]);
   return activeVideo || activeSpeaker;

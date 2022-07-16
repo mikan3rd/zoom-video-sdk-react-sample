@@ -1,10 +1,10 @@
-import { useRef } from 'react';
+import { useRef } from "react";
 
 export function usePersistFn(fn: Function) {
   const fnRef = useRef<Function>(fn);
   fnRef.current = fn;
   const persistFn = useRef<Function>();
-  if (!persistFn.current) {
+  if (persistFn.current == null) {
     persistFn.current = function (...args: any) {
       return fnRef.current.apply(this, args);
     };

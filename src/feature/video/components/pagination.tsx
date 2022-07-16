@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-boolean-value */
-import React, { useCallback } from 'react';
-import { CaretLeftOutlined, CaretRightOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
-import classnames from 'classnames';
-import './pagination.scss';
+import React, { useCallback } from "react";
+
+import { CaretLeftOutlined, CaretRightOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+import classnames from "classnames";
+import "./pagination.scss";
 interface PaginationProps {
   page: number;
   totalPage: number;
@@ -24,7 +25,7 @@ const Pagination = (props: PaginationProps) => {
     }
   }, [page, totalPage, setPage]);
   return (
-    <div className={classnames('pagination', { 'in-sharing': inSharing })}>
+    <div className={classnames("pagination", { "in-sharing": inSharing })}>
       <Button
         key="left"
         className="previous-page-button"
@@ -34,13 +35,7 @@ const Pagination = (props: PaginationProps) => {
       >
         {pageIndication}
       </Button>
-      <Button
-        key="right"
-        className="next-page-button"
-        icon={<CaretRightOutlined />}
-        ghost={true}
-        onClick={toNextPage}
-      >
+      <Button key="right" className="next-page-button" icon={<CaretRightOutlined />} ghost={true} onClick={toNextPage}>
         {pageIndication}
       </Button>
     </div>

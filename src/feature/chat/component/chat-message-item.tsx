@@ -1,10 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useCallback } from 'react';
-import { UserOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
-import classNames from 'classnames';
-import { ChatRecord } from '../chat-types';
-import './chat-message-item.scss';
+import React, { useCallback } from "react";
+
+import { UserOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+import classNames from "classnames";
+
+import { ChatRecord } from "../chat-types";
+import "./chat-message-item.scss";
 interface ChatMessageItemProps {
   record: ChatRecord;
   currentUserId: number;
@@ -22,24 +24,14 @@ const ChatMessageItem = (props: ChatMessageItemProps) => {
   }, [isCurrentUser, sender, setChatUser]);
   const chatMessage = Array.isArray(message) ? message : [message];
   return (
-    <div className={classNames('chat-message-item', { myself: isCurrentUser })}>
-      <Button
-        className="chat-message-avatar"
-        onClick={onAvatarClick}
-        ghost
-        shape="circle"
-        size="large"
-      >
-        {avatar ? (
-          <img src={avatar} className="chat-message-avatar-img" alt="" />
-        ) : (
-          <UserOutlined />
-        )}
+    <div className={classNames("chat-message-item", { myself: isCurrentUser })}>
+      <Button className="chat-message-avatar" onClick={onAvatarClick} ghost shape="circle" size="large">
+        {avatar ? <img src={avatar} className="chat-message-avatar-img" alt="" /> : <UserOutlined />}
       </Button>
       <div className="chat-message-content">
-        <div className={classNames('chat-message-info', { myself: isCurrentUser })}>
+        <div className={classNames("chat-message-info", { myself: isCurrentUser })}>
           <p className="chat-message-receiver">
-            {isCurrentUser ? '' : sender.name}
+            {isCurrentUser ? "" : sender.name}
             <span>To</span>
             <a
               href="#"
@@ -48,18 +40,14 @@ const ChatMessageItem = (props: ChatMessageItemProps) => {
                 setChatUser(receiver.userId);
               }}
             >
-              {receiver.userId === currentUserId ? 'me' : receiver.name}
+              {receiver.userId === currentUserId ? "me" : receiver.name}
             </a>
           </p>
-          <p className="chat-message-time">
-            {new Date(timestamp).toLocaleTimeString()}
-          </p>
+          <p className="chat-message-time">{new Date(timestamp).toLocaleTimeString()}</p>
         </div>
-        <ul
-          className={classNames('chat-message-text-list', { myself: isCurrentUser })}
-        >
+        <ul className={classNames("chat-message-text-list", { myself: isCurrentUser })}>
           {chatMessage.map((text, index) => (
-            <li className={classNames('chat-message-text')} key={index}>
+            <li className={classNames("chat-message-text")} key={index}>
               {text}
             </li>
           ))}

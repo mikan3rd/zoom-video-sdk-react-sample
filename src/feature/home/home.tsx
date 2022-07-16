@@ -1,9 +1,11 @@
 /* eslint-disable no-restricted-globals */
-import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { Card, Button } from 'antd';
-import { IconFont } from '../../component/icon-font';
-import './home.scss';
+import React from "react";
+
+import { Button, Card } from "antd";
+import { RouteComponentProps } from "react-router-dom";
+
+import { IconFont } from "../../component/icon-font";
+import "./home.scss";
 
 const { Meta } = Card;
 interface HomeProps extends RouteComponentProps {
@@ -13,40 +15,39 @@ interface HomeProps extends RouteComponentProps {
 const Home: React.FunctionComponent<HomeProps> = (props) => {
   const { history, status, onLeaveOrJoinSession } = props;
   const onCardClick = (type: string) => {
-      history.push(`/${type}${location.search}`);
+    history.push(`/${type}${location.search}`);
   };
   const featureList = [
     {
-      key: 'video',
-      icon: 'icon-meeting',
-      title: 'Audio, video and share',
-      description:
-        'Gallery Layout, Start/Stop Audio, Mute/Unmute, Start/Stop Video, Start/Stop Screen Share',
+      key: "video",
+      icon: "icon-meeting",
+      title: "Audio, video and share",
+      description: "Gallery Layout, Start/Stop Audio, Mute/Unmute, Start/Stop Video, Start/Stop Screen Share",
     },
     {
-      key: 'chat',
-      icon: 'icon-chat',
-      title: 'Session chat',
-      description: 'Session Chat, Chat Priviledge',
+      key: "chat",
+      icon: "icon-chat",
+      title: "Session chat",
+      description: "Session Chat, Chat Priviledge",
     },
     {
-      key: 'command',
-      icon: 'icon-chat',
-      title: 'Command Channel chat',
-      description: 'Session Command Channel chat',
+      key: "command",
+      icon: "icon-chat",
+      title: "Command Channel chat",
+      description: "Session Command Channel chat",
     },
     {
-      key: 'preview',
-      icon: 'icon-meeting',
-      title: 'Local Preview',
-      description: 'Audio and Video preview',
+      key: "preview",
+      icon: "icon-meeting",
+      title: "Local Preview",
+      description: "Audio and Video preview",
     },
   ];
   let actionText;
-  if (status === 'connected') {
-    actionText = 'Leave';
-  } else if (status === 'closed') {
-    actionText = 'Join';
+  if (status === "connected") {
+    actionText = "Leave";
+  } else if (status === "closed") {
+    actionText = "Join";
   }
   return (
     <div>
@@ -56,28 +57,16 @@ const Home: React.FunctionComponent<HomeProps> = (props) => {
           <span>VideoSDK Demo</span>
         </a>
         <div className="navdoc">
-          <a
-            href="https://marketplace.zoom.us/docs/sdk/video/web/reference"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://marketplace.zoom.us/docs/sdk/video/web/reference" target="_blank" rel="noreferrer">
             <span>API Reference</span>
           </a>
 
-          <a
-            href="https://marketplace.zoom.us/docs/sdk/video/web/build/sample-app"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://marketplace.zoom.us/docs/sdk/video/web/build/sample-app" target="_blank" rel="noreferrer">
             <span>Doc</span>
           </a>
         </div>
         {actionText && (
-          <Button
-            type="link"
-            className="navleave"
-            onClick={onLeaveOrJoinSession}
-          >
+          <Button type="link" className="navleave" onClick={onLeaveOrJoinSession}>
             {actionText}
           </Button>
         )}
@@ -90,7 +79,7 @@ const Home: React.FunctionComponent<HomeProps> = (props) => {
             const { key, icon, title, description } = feature;
             return (
               <Card
-                cover={<IconFont style={{ fontSize: '72px' }} type={icon} />}
+                cover={<IconFont style={{ fontSize: "72px" }} type={icon} />}
                 hoverable
                 style={{ width: 320 }}
                 className="entry-item"

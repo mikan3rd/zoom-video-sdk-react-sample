@@ -1,17 +1,21 @@
-import React, { useCallback, useContext, useEffect, useState, useRef } from 'react';
-import produce from 'immer';
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+
 import ZoomVideo from "@zoom/videosdk";
-import { useMount } from '../../hooks';
-import './preview.scss';
-import MicrophoneButton from '../video/components/microphone';
-import CameraButton from '../video/components/camera';
-import { message } from 'antd';
-import { MediaDevice } from '../video/video-types';
+import produce from "immer";
+
+import { useMount } from "../../hooks";
+import "./preview.scss";
+import CameraButton from "../video/components/camera";
+import MicrophoneButton from "../video/components/microphone";
+
+import { message } from "antd";
+
+import { MediaDevice } from "../video/video-types";
 
 // label: string;
 // deviceId: string;
-let prevMicFeedbackStyle = '';
-let micFeedBackInteval: any = '';
+let prevMicFeedbackStyle = "";
+let micFeedBackInteval: any = "";
 
 let localAudio = ZoomVideo.createLocalAudioTrack();
 let localVideo = ZoomVideo.createLocalVideoTrack();
@@ -24,15 +28,13 @@ const mountDevices: () => Promise<{
 }> = async () => {
   allDevices = await ZoomVideo.getDevices();
   const cameraDevices: Array<MediaDeviceInfo> = allDevices.filter(function (device) {
-    return device.kind === 'videoinput';
+    return device.kind === "videoinput";
   });
   const micDevices: Array<MediaDeviceInfo> = allDevices.filter(function (device) {
-    return device.kind === 'audioinput';
+    return device.kind === "audioinput";
   });
-  const speakerDevices: Array<MediaDeviceInfo> = allDevices.filter(function (
-    device,
-  ) {
-    return device.kind === 'audiooutput';
+  const speakerDevices: Array<MediaDeviceInfo> = allDevices.filter(function (device) {
+    return device.kind === "audiooutput";
   });
   return {
     mics: micDevices.map((item) => {
@@ -55,40 +57,36 @@ let PREVIEW_VIDEO: any;
 
 const updateMicFeedbackStyle = () => {
   const newVolumeIntensity = localAudio.getCurrentVolume();
-  let newMicFeedbackStyle = '';
+  let newMicFeedbackStyle = "";
 
   if (newVolumeIntensity === 0) {
-    newMicFeedbackStyle = '';
+    newMicFeedbackStyle = "";
   } else if (newVolumeIntensity <= 0.05) {
-    newMicFeedbackStyle = 'mic-feedback__very-low';
+    newMicFeedbackStyle = "mic-feedback__very-low";
   } else if (newVolumeIntensity <= 0.1) {
-    newMicFeedbackStyle = 'mic-feedback__low';
+    newMicFeedbackStyle = "mic-feedback__low";
   } else if (newVolumeIntensity <= 0.15) {
-    newMicFeedbackStyle = 'mic-feedback__medium';
+    newMicFeedbackStyle = "mic-feedback__medium";
   } else if (newVolumeIntensity <= 0.2) {
-    newMicFeedbackStyle = 'mic-feedback__high';
+    newMicFeedbackStyle = "mic-feedback__high";
   } else if (newVolumeIntensity <= 0.25) {
-    newMicFeedbackStyle = 'mic-feedback__very-high';
+    newMicFeedbackStyle = "mic-feedback__very-high";
   } else {
-    newMicFeedbackStyle = 'mic-feedback__max';
+    newMicFeedbackStyle = "mic-feedback__max";
   }
-  const micIcon: any = document.getElementById('auido-volume-feedback');
-  if (prevMicFeedbackStyle !== '' && micIcon) {
+  const micIcon: any = document.getElementById("auido-volume-feedback");
+  if (prevMicFeedbackStyle !== "" && micIcon) {
     micIcon.classList.toggle(prevMicFeedbackStyle);
   }
 
-  if (newMicFeedbackStyle !== '' && micIcon) {
+  if (newMicFeedbackStyle !== "" && micIcon) {
     micIcon.classList.toggle(newMicFeedbackStyle);
   }
   console.log(newMicFeedbackStyle, newVolumeIntensity);
   prevMicFeedbackStyle = newMicFeedbackStyle;
 };
 
-const encodePreviewOptions = (
-  isStartedAudio: boolean,
-  isMuted: boolean,
-  isStartedVideo: boolean,
-) => {
+const encodePreviewOptions = (isStartedAudio: boolean, isMuted: boolean, isStartedVideo: boolean) => {
   let res = 0;
   res = (res | +isStartedVideo) << 1;
   res = (res | +isMuted) << 1;
@@ -113,40 +111,40 @@ const PreviewContainer = () => {
   const [micList, setMicList] = useState<MediaDevice[]>([]);
   const [speakerList, setSpeakerList] = useState<MediaDevice[]>([]);
   const [cameraList, setCameraList] = useState<MediaDevice[]>([]);
-  const [activeMicrophone, setActiveMicrophone] = useState('');
-  const [activeSpeaker, setActiveSpeaker] = useState('');
-  const [activeCamera, setActiveCamera] = useState('');
+  const [activeMicrophone, setActiveMicrophone] = useState("");
+  const [activeSpeaker, setActiveSpeaker] = useState("");
+  const [activeCamera, setActiveCamera] = useState("");
 
   const onCameraClick = useCallback(async () => {
     if (isStartedVideo) {
-      await localVideo?.stop();
+      await localVideo.stop();
       setIsStartedVideo(false);
     } else {
-      await localVideo?.start(PREVIEW_VIDEO);
+      await localVideo.start(PREVIEW_VIDEO);
       setIsStartedVideo(true);
     }
   }, [isStartedVideo]);
   const onMicrophoneClick = useCallback(async () => {
     if (isStartedAudio) {
       if (isMuted) {
-        await localAudio?.unmute();
+        await localAudio.unmute();
         micFeedBackInteval = setInterval(updateMicFeedbackStyle, 500);
         setIsMuted(false);
       } else {
-        await localAudio?.mute();
+        await localAudio.mute();
         if (micFeedBackInteval) {
           clearInterval(micFeedBackInteval);
         }
         setIsMuted(true);
       }
     } else {
-      await localAudio?.start();
+      await localAudio.start();
       setIsStartedAudio(true);
     }
   }, [isStartedAudio, isMuted]);
   const onMicrophoneMenuClick = async (key: string) => {
-    const [type, deviceId] = key.split('|');
-    if (type === 'microphone') {
+    const [type, deviceId] = key.split("|");
+    if (type === "microphone") {
       if (deviceId !== activeMicrophone) {
         await localAudio.stop();
         setIsMuted(true);
@@ -154,7 +152,7 @@ const PreviewContainer = () => {
         await localAudio.start();
         setActiveMicrophone(deviceId);
       }
-    } else if (type === 'leave audio') {
+    } else if (type === "leave audio") {
       await localAudio.stop();
       setIsStartedAudio(false);
     }
@@ -172,17 +170,17 @@ const PreviewContainer = () => {
 
   useEffect(() => {
     const encodeVal = encodePreviewOptions(isStartedAudio, isMuted, isStartedVideo);
-    console.log('preview encode val', encodeVal);
+    console.log("preview encode val", encodeVal);
     const decodeOption = decodePreviewOptions(encodeVal);
-    console.log('preview config', decodePreviewOptions(encodeVal));
+    console.log("preview config", decodePreviewOptions(encodeVal));
     message.info(JSON.stringify(decodeOption, null, 2));
     console.log(micList);
   }, [isStartedAudio, isMuted, isStartedVideo]);
 
   useMount(() => {
-    PREVIEW_VIDEO = document.getElementById('js-preview-video');
+    PREVIEW_VIDEO = document.getElementById("js-preview-video");
     mountDevices().then((devices) => {
-      console.log('devicesdevicesdevicesdevices', devices);
+      console.log("devicesdevicesdevicesdevices", devices);
       setMicList(devices.mics);
       setCameraList(devices.cameras);
       // setSpeakerList(devices.speakers);
@@ -196,12 +194,7 @@ const PreviewContainer = () => {
           <h1>Audio And Video Preview</h1>
         </span>
         <div className="container video-app">
-          <video
-            id="js-preview-video"
-            className="preview-video"
-            muted={true}
-            data-video="0"
-          ></video>
+          <video id="js-preview-video" className="preview-video" muted={true} data-video="0"></video>
           <div className="video-footer video-operations video-operations-preview">
             <MicrophoneButton
               isStartedAudio={isStartedAudio}

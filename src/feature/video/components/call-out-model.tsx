@@ -1,4 +1,4 @@
-import { Modal, Select, Input, Checkbox, Form } from "antd";
+import { Checkbox, Form, Input, Modal, Select } from "antd";
 import classNames from "classnames";
 import "./call-out-model.scss";
 interface CallOutModelProps {
@@ -6,28 +6,12 @@ interface CallOutModelProps {
   phoneCountryList?: any[];
   phoneCallStatus?: { text: string; type: string };
   setVisible: (visible: boolean) => void;
-  onPhoneCallClick?: (
-    code: string,
-    phoneNumber: string,
-    name: string,
-    option: any
-  ) => void;
-  onPhoneCallCancel?: (
-    code: string,
-    phoneNumber: string,
-    option: any
-  ) => Promise<any>;
+  onPhoneCallClick?: (code: string, phoneNumber: string, name: string, option: any) => void;
+  onPhoneCallCancel?: (code: string, phoneNumber: string, option: any) => Promise<any>;
 }
 
 const CallOutModel = (props: CallOutModelProps) => {
-  const {
-    visible,
-    phoneCountryList,
-    phoneCallStatus,
-    onPhoneCallClick,
-    onPhoneCallCancel,
-    setVisible,
-  } = props;
+  const { visible, phoneCountryList, phoneCallStatus, onPhoneCallClick, onPhoneCallCancel, setVisible } = props;
   const [form] = Form.useForm();
   return (
     <Modal
@@ -64,11 +48,11 @@ const CallOutModel = (props: CallOutModelProps) => {
           phone: { countryCode, phoneNumber },
           callme,
         } = form.getFieldsValue();
-        if(countryCode){
+        if (countryCode) {
           const [, code] = countryCode.split("&&");
-        await onPhoneCallCancel?.(code || "", phoneNumber, { callMe: callme });
+          await onPhoneCallCancel?.(code || "", phoneNumber, { callMe: callme });
         }
-        
+
         setVisible(false);
       }}
       destroyOnClose
@@ -81,12 +65,7 @@ const CallOutModel = (props: CallOutModelProps) => {
               noStyle
               rules={[{ required: true, message: "Country code is required" }]}
             >
-              <Select
-                placeholder="select a country"
-                className="country-code"
-                showSearch
-                optionFilterProp="children"
-              >
+              <Select placeholder="select a country" className="country-code" showSearch optionFilterProp="children">
                 {phoneCountryList?.map((item) => (
                   <Select.Option
                     value={`${item.id}&&${item.code}`}
@@ -103,12 +82,7 @@ const CallOutModel = (props: CallOutModelProps) => {
         <Form.Item name="callme" valuePropName="checked">
           <Checkbox>Call me</Checkbox>
         </Form.Item>
-        <Form.Item
-          noStyle
-          shouldUpdate={(prevValues, currentValues) =>
-            prevValues.callme !== currentValues.callme
-          }
-        >
+        <Form.Item noStyle shouldUpdate={(prevValues, currentValues) => prevValues.callme !== currentValues.callme}>
           {({ getFieldValue }) =>
             getFieldValue("callme") ? null : (
               <Form.Item
@@ -122,12 +96,7 @@ const CallOutModel = (props: CallOutModelProps) => {
             )
           }
         </Form.Item>
-        <Form.Item
-          noStyle
-          shouldUpdate={(prevValues, currentValues) =>
-            prevValues.callme !== currentValues.callme
-          }
-        >
+        <Form.Item noStyle shouldUpdate={(prevValues, currentValues) => prevValues.callme !== currentValues.callme}>
           {({ getFieldValue }) =>
             getFieldValue("callme") ? null : (
               <Form.Item name="greeting" valuePropName="checked">
@@ -136,12 +105,7 @@ const CallOutModel = (props: CallOutModelProps) => {
             )
           }
         </Form.Item>
-        <Form.Item
-          noStyle
-          shouldUpdate={(prevValues, currentValues) =>
-            prevValues.callme !== currentValues.callme
-          }
-        >
+        <Form.Item noStyle shouldUpdate={(prevValues, currentValues) => prevValues.callme !== currentValues.callme}>
           {({ getFieldValue }) =>
             getFieldValue("callme") ? null : (
               <Form.Item name="press" valuePropName="checked">
@@ -151,12 +115,10 @@ const CallOutModel = (props: CallOutModelProps) => {
           }
         </Form.Item>
       </Form>
-      {phoneCallStatus && (
+      {phoneCallStatus != null && (
         <div className="phone-call-status">
           Phone call status:
-          <span className={classNames("status-text", phoneCallStatus.type)}>
-            {phoneCallStatus.text}
-          </span>
+          <span className={classNames("status-text", phoneCallStatus.type)}>{phoneCallStatus.text}</span>
         </div>
       )}
     </Modal>

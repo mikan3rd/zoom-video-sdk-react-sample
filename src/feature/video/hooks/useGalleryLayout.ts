@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useState, MutableRefObject } from 'react';
-import { getVideoLayout } from '../video-layout-helper';
-import { useRenderVideo } from './useRenderVideo';
-import { Dimension, Pagination, CellLayout } from '../video-types';
-import { ZoomClient, MediaStream, Participant } from '../../../index-types';
+import { MutableRefObject, useCallback, useEffect, useState } from "react";
+
+import { MediaStream, Participant, ZoomClient } from "../../../index-types";
+import { getVideoLayout } from "../video-layout-helper";
+import { CellLayout, Dimension, Pagination } from "../video-types";
+
+import { useRenderVideo } from "./useRenderVideo";
 /**
  * Default order of video:
  *  1. video's participants first
@@ -40,25 +42,21 @@ export function useGalleryLayout(
           .filter((user) => user.userId !== currentUser.userId)
           .sort((user1, user2) => Number(user2.bVideoOn) - Number(user1.bVideoOn));
         pageParticipants.splice(1, 0, currentUser);
-        pageParticipants = pageParticipants.filter(
-          (_user, index) => Math.floor(index / pageSize) === page,
-        );
+        pageParticipants = pageParticipants.filter((_user, index) => Math.floor(index / pageSize) === page);
       }
       setVisibleParticipants(pageParticipants);
-      const videoParticipants = pageParticipants
-        .filter((user) => user.bVideoOn)
-        .map((user) => user.userId);
+      const videoParticipants = pageParticipants.filter((user) => user.bVideoOn).map((user) => user.userId);
       setSubscribedVideos(videoParticipants);
     }
   }, [zmClient, page, pageSize]);
   useEffect(() => {
-    zmClient.on('user-added', onParticipantsChange);
-    zmClient.on('user-removed', onParticipantsChange);
-    zmClient.on('user-updated', onParticipantsChange);
+    zmClient.on("user-added", onParticipantsChange);
+    zmClient.on("user-removed", onParticipantsChange);
+    zmClient.on("user-updated", onParticipantsChange);
     return () => {
-      zmClient.off('user-added', onParticipantsChange);
-      zmClient.off('user-removed', onParticipantsChange);
-      zmClient.off('user-updated', onParticipantsChange);
+      zmClient.off("user-added", onParticipantsChange);
+      zmClient.off("user-removed", onParticipantsChange);
+      zmClient.off("user-updated", onParticipantsChange);
     };
   }, [zmClient, onParticipantsChange]);
   useEffect(() => {
@@ -72,7 +70,7 @@ export function useGalleryLayout(
     layout,
     subscribedVideos,
     visibleParticipants,
-    zmClient.getCurrentUserInfo()?.userId
+    zmClient.getCurrentUserInfo().userId,
   );
   return {
     visibleParticipants,

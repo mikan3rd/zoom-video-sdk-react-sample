@@ -1,7 +1,9 @@
-import _ from 'lodash';
-import { useState, useCallback, useEffect, MutableRefObject } from 'react';
-import { useSizeCallback, useMount } from '../../../hooks';
-import { MediaStream } from '../../../index-types';
+import { MutableRefObject, useCallback, useEffect, useState } from "react";
+
+import _ from "lodash";
+
+import { useMount, useSizeCallback } from "../../../hooks";
+import { MediaStream } from "../../../index-types";
 export function useCanvasDimension(
   mediaStream: MediaStream | null,
   videoRef: MutableRefObject<HTMLCanvasElement | null>,
@@ -22,7 +24,7 @@ export function useCanvasDimension(
   );
   useSizeCallback(videoRef.current, onCanvasResize);
   useMount(() => {
-    if (videoRef.current) {
+    if (videoRef.current != null) {
       const { width, height } = videoRef.current.getBoundingClientRect();
       setDimension({ width, height });
     }
@@ -30,16 +32,12 @@ export function useCanvasDimension(
   useEffect(() => {
     const { width, height } = dimension;
     try {
-      if (videoRef.current) {
+      if (videoRef.current != null) {
         videoRef.current.width = width;
         videoRef.current.height = height;
       }
     } catch (e) {
-      mediaStream?.updateVideoCanvasDimension(
-        videoRef.current as HTMLCanvasElement,
-        width,
-        height,
-      );
+      mediaStream?.updateVideoCanvasDimension(videoRef.current as HTMLCanvasElement, width, height);
     }
   }, [mediaStream, dimension, videoRef]);
   return dimension;

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 export function useUnmount(fn: Function) {
   const fnRef = useRef<Function>(fn);

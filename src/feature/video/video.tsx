@@ -1,27 +1,25 @@
-import React, {
-  useState,
-  useContext,
-  useRef,
-  useEffect,
-  useCallback,
-} from 'react';
-import classnames from 'classnames';
-import _ from 'lodash';
-import { RouteComponentProps } from 'react-router-dom';
-import ZoomContext from '../../context/zoom-context';
-import ZoomMediaContext from '../../context/media-context';
-import Avatar from './components/avatar';
-import VideoFooter from './components/video-footer';
-import Pagination from './components/pagination';
-import { useCanvasDimension } from './hooks/useCanvasDimension';
-import { useGalleryLayout } from './hooks/useGalleryLayout';
-import { usePagination } from './hooks/usePagination';
-import { useActiveVideo } from './hooks/useAvtiveVideo';
-import { useShare } from './hooks/useShare';
-import './video.scss';
-import { isSupportWebCodecs } from '../../utils/platform';
-import { isShallowEqual } from "../../utils/util";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+
+import classnames from "classnames";
+import _ from "lodash";
+import { RouteComponentProps } from "react-router-dom";
+
+import ZoomMediaContext from "../../context/media-context";
+import ZoomContext from "../../context/zoom-context";
 import { useSizeCallback } from "../../hooks/useSizeCallback";
+import { isSupportWebCodecs } from "../../utils/platform";
+import { isShallowEqual } from "../../utils/util";
+
+import Avatar from "./components/avatar";
+import Pagination from "./components/pagination";
+import VideoFooter from "./components/video-footer";
+import { useActiveVideo } from "./hooks/useAvtiveVideo";
+import { useCanvasDimension } from "./hooks/useCanvasDimension";
+import { useGalleryLayout } from "./hooks/useGalleryLayout";
+import { usePagination } from "./hooks/usePagination";
+import { useShare } from "./hooks/useShare";
+
+import "./video.scss";
 
 const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => {
   const zmClient = useContext(ZoomContext);
@@ -43,10 +41,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
   });
   const canvasDimension = useCanvasDimension(mediaStream, videoRef);
   const activeVideo = useActiveVideo(zmClient);
-  const { page, pageSize, totalPage, totalSize, setPage } = usePagination(
-    zmClient,
-    canvasDimension,
-  );
+  const { page, pageSize, totalPage, totalSize, setPage } = usePagination(zmClient, canvasDimension);
   const { visibleParticipants, layout: videoLayout } = useGalleryLayout(
     zmClient,
     mediaStream,
@@ -60,27 +55,19 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
       totalSize,
     },
   );
-  const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(
-    zmClient,
-    mediaStream,
-    shareRef,
-  );
+  const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(zmClient, mediaStream, shareRef);
   const isSharing = isRecieveSharing || isStartedShare;
   useEffect(() => {
-    if (isSharing && shareContainerRef.current) {
+    if (isSharing && shareContainerRef.current != null) {
       const { width, height } = sharedContentDimension;
-      const { width: containerWidth, height: containerHeight } =containerDimension;
-      const ratio = Math.min(
-        containerWidth / width,
-        containerHeight / height,
-        1
-      );
+      const { width: containerWidth, height: containerHeight } = containerDimension;
+      const ratio = Math.min(containerWidth / width, containerHeight / height, 1);
       setShareViewDimension({
-        width:Math.floor(width * ratio),
-        height:Math.floor(height * ratio)
-      })
+        width: Math.floor(width * ratio),
+        height: Math.floor(height * ratio),
+      });
     }
-  },[isSharing,sharedContentDimension,containerDimension]);
+  }, [isSharing, sharedContentDimension, containerDimension]);
 
   const onShareContainerResize = useCallback(({ width, height }) => {
     _.throttle(() => {
@@ -90,10 +77,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
   useSizeCallback(shareContainerRef.current, onShareContainerResize);
   useEffect(() => {
     if (!isShallowEqual(shareViewDimension, sharedContentDimension)) {
-      mediaStream?.updateSharingCanvasDimension(
-        shareViewDimension.width,
-        shareViewDimension.height
-      );
+      mediaStream?.updateSharingCanvasDimension(shareViewDimension.width, shareViewDimension.height);
     }
   }, [mediaStream, sharedContentDimension, shareViewDimension]);
 
@@ -112,10 +96,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
             height: `${shareViewDimension.height}px`,
           }}
         >
-          <canvas
-            className={classnames("share-canvas", { hidden: isStartedShare })}
-            ref={shareRef}
-          />
+          <canvas className={classnames("share-canvas", { hidden: isStartedShare })} ref={shareRef} />
           {isSupportWebCodecs() ? (
             <video
               className={classnames("share-canvas", {
@@ -138,13 +119,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
           "in-sharing": isSharing,
         })}
       >
-        <canvas
-          className="video-canvas"
-          id="video-canvas"
-          width="800"
-          height="600"
-          ref={videoRef}
-        />
+        <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
         <ul className="avatar-list">
           {visibleParticipants.map((user, index) => {
             if (index > videoLayout.length - 1) {
@@ -169,19 +144,8 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
           })}
         </ul>
       </div>
-      <VideoFooter
-        className="video-operations"
-        sharing
-        shareRef={selfShareRef}
-      />
-      {totalPage > 1 && (
-        <Pagination
-          page={page}
-          totalPage={totalPage}
-          setPage={setPage}
-          inSharing={isSharing}
-        />
-      )}
+      <VideoFooter className="video-operations" sharing shareRef={selfShareRef} />
+      {totalPage > 1 && <Pagination page={page} totalPage={totalPage} setPage={setPage} inSharing={isSharing} />}
     </div>
   );
 };

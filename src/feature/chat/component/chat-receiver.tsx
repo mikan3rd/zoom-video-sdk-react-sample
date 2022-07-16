@@ -1,11 +1,13 @@
-import React, { useCallback, useContext } from 'react';
-import { Menu, Dropdown, Button } from 'antd';
-import { CheckOutlined, DownOutlined, DashOutlined } from '@ant-design/icons';
-import {ChatPrivilege} from '@zoom/videosdk'
-import classNames from 'classnames';
-import { ChatReceiver } from '../chat-types';
-import ChatContext from '../../../context/chat-context';
-import './chat-receiver.scss';
+import React, { useCallback, useContext } from "react";
+
+import { CheckOutlined, DashOutlined, DownOutlined } from "@ant-design/icons";
+import { ChatPrivilege } from "@zoom/videosdk";
+import { Button, Dropdown, Menu } from "antd";
+import classNames from "classnames";
+
+import ChatContext from "../../../context/chat-context";
+import { ChatReceiver } from "../chat-types";
+import "./chat-receiver.scss";
 const { Item: MenuItem, ItemGroup: MenuItemGroup } = Menu;
 interface ChatReceiverProps {
   chatUsers: ChatReceiver[];
@@ -16,40 +18,32 @@ interface ChatReceiverProps {
 }
 const meetingChatPrivilegeList = [
   {
-    name: 'No One',
+    name: "No One",
     value: ChatPrivilege.NoOne,
   },
   {
-    name: 'Everyone Publicly',
+    name: "Everyone Publicly",
     value: ChatPrivilege.EveryonePublicly,
   },
   {
-    name: 'Everyone Publicly and Directly',
+    name: "Everyone Publicly and Directly",
     value: ChatPrivilege.All,
   },
 ];
 const ChatReceiverContainer = (props: ChatReceiverProps) => {
-  const {
-    chatUsers,
-    selectedChatUser,
-    chatPrivilege,
-    isHostOrManager,
-    setChatUser,
-  } = props;
+  const { chatUsers, selectedChatUser, chatPrivilege, isHostOrManager, setChatUser } = props;
   const chatClient = useContext(ChatContext);
   const menuItems = chatUsers.map((item) => (
     <MenuItem
       key={item.userId}
-      className={classNames('chat-receiver-item', {
+      className={classNames("chat-receiver-item", {
         selected: item.userId === selectedChatUser?.userId,
       })}
       icon={item.userId === selectedChatUser?.userId && <CheckOutlined />}
     >
       {item.displayName}
       {(item.isCoHost || item.isHost) && (
-        <span className="chat-receiver-item-affix">
-          ({item.isHost ? 'Host' : 'Co-host'})
-        </span>
+        <span className="chat-receiver-item-affix">({item.isHost ? "Host" : "Co-host"})</span>
       )}
     </MenuItem>
   ));
@@ -82,7 +76,7 @@ const ChatReceiverContainer = (props: ChatReceiverProps) => {
     const privilegeMenuItems = privilegeItems.map((item) => (
       <MenuItem
         key={item.value}
-        className={classNames('chat-privilege-item', {
+        className={classNames("chat-privilege-item", {
           selected: item.value === chatPrivilege,
         })}
         icon={item.value === chatPrivilege && <CheckOutlined />}
@@ -91,10 +85,7 @@ const ChatReceiverContainer = (props: ChatReceiverProps) => {
       </MenuItem>
     ));
     privilegeMenu = (
-      <Menu
-        onClick={onMenuItemPrivilegeClick}
-        className="chat-receiver-dropdown-menu"
-      >
+      <Menu onClick={onMenuItemPrivilegeClick} className="chat-receiver-dropdown-menu">
         <MenuItemGroup key="privilege" title="Participant Can Chat With:">
           {privilegeMenuItems}
         </MenuItemGroup>
@@ -105,14 +96,14 @@ const ChatReceiverContainer = (props: ChatReceiverProps) => {
     <div className="chat-receiver">
       <div className="chat-receiver-wrap">
         <span className="chat-to">To:</span>
-        <Dropdown overlay={menu} placement="topLeft" trigger={['click']}>
+        <Dropdown overlay={menu} placement="topLeft" trigger={["click"]}>
           <Button className="chat-receiver-button">
             {selectedChatUser?.displayName} <DownOutlined />
           </Button>
         </Dropdown>
       </div>
       {isHostOrManager && (
-        <Dropdown overlay={privilegeMenu} placement="topRight" trigger={['click']}>
+        <Dropdown overlay={privilegeMenu} placement="topRight" trigger={["click"]}>
           <Button className="chat-privilege-button">
             <DashOutlined />
           </Button>
