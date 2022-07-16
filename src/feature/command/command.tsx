@@ -80,7 +80,7 @@ const CommandContainer = () => {
           }
         }),
       );
-      if (chatWrapRef.current != null) {
+      if (chatWrapRef.current !== null) {
         chatWrapRef.current.scrollTo(0, chatWrapRef.current.scrollHeight);
       }
     },
@@ -110,7 +110,7 @@ const CommandContainer = () => {
   }, [currentUserId, zmClient]);
 
   useEffect(() => {
-    if (command != null) {
+    if (command !== null) {
       const index = commandReceivers.findIndex((user) => user.userId === command.userId);
       if (index === -1) {
         setCommandUser(commandReceivers[0]);
@@ -124,7 +124,7 @@ const CommandContainer = () => {
   const setCommandUserId = useCallback(
     (userId) => {
       const user = commandReceivers.find((u) => u.userId === userId);
-      if (user != null) {
+      if (user !== null) {
         setCommandUser(user);
       }
     },
@@ -133,7 +133,7 @@ const CommandContainer = () => {
   const sendMessage = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       event.preventDefault();
-      if (command != null && commandDraft) {
+      if (command !== null && commandDraft) {
         if (command.userId) cmdClient?.send(commandDraft, command.userId);
         else {
           cmdClient?.send(commandDraft);

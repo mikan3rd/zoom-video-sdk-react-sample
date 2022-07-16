@@ -101,7 +101,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     }
   }, [mediaStream, isStartedAudio, isMuted]);
   const onMicrophoneMenuClick = async (key: string) => {
-    if (mediaStream != null) {
+    if (mediaStream !== null) {
       const [type, deviceId] = key.split("|");
       if (type === "microphone") {
         if (deviceId !== activeMicrophone) {
@@ -128,7 +128,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     }
   };
   const onSwitchCamera = async (key: string) => {
-    if (mediaStream != null) {
+    if (mediaStream !== null) {
       if (activeCamera !== key) {
         await mediaStream.switchCamera(key);
         setActiveCamera(mediaStream.getActiveCamera());
@@ -173,7 +173,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     }
   }, []);
   const onScreenShareClick = useCallback(async () => {
-    if (!isStartedScreenShare && shareRef != null && shareRef.current != null) {
+    if (!isStartedScreenShare && shareRef !== null && shareRef.current !== null) {
       await mediaStream?.startShareScreen(shareRef.current);
       setIsStartedScreenShare(true);
     } else if (isStartedScreenShare) {
@@ -186,7 +186,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     setIsStartedScreenShare(false);
   }, []);
   const onDeviceChange = useCallback(() => {
-    if (mediaStream != null) {
+    if (mediaStream !== null) {
       setMicList(mediaStream.getMicList());
       setSpeakerList(mediaStream.getSpeakerList());
       setCameraList(mediaStream.getCameraList());
@@ -286,10 +286,10 @@ const VideoFooter = (props: VideoFooterProps) => {
   });
   useMount(() => {
     setIsSupportPhone(!!mediaStream?.isSupportPhoneFeature());
-    setPhoneCountryList(mediaStream?.getSupportCountryInfo() != null || []);
+    setPhoneCountryList(mediaStream?.getSupportCountryInfo() !== null || []);
   });
   useEffect(() => {
-    if (mediaStream != null) {
+    if (mediaStream !== null) {
       mediaStream.subscribeAudioStatisticData();
       mediaStream.subscribeVideoStatisticData();
     }

@@ -74,7 +74,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
     }
   }
   useEffect(() => {
-    if (isSharing && shareContainerRef.current != null) {
+    if (isSharing && shareContainerRef.current !== null) {
       const { width, height } = sharedContentDimension;
       const { width: containerWidth, height: containerHeight } = containerDimension;
       const ratio = Math.min(containerWidth / width, containerHeight / height, 1);
@@ -141,7 +141,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
             id={SELF_VIDEO_ID}
             className={classnames("self-video-non-sab")}
             style={
-              selfVideoLayout != null
+              selfVideoLayout !== null
                 ? {
                     display: "block",
                     width: `${selfVideoLayout.width}px`,

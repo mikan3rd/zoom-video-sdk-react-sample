@@ -1,10 +1,9 @@
 import React, { useCallback, useContext, useEffect, useMemo, useReducer, useState } from "react";
 
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import ZoomVideo, { ConnectionState } from "@zoom/videosdk";
 import { Modal, message } from "antd";
-import "antd/dist/antd.css";
 import produce from "immer";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
 import LoadingLayer from "./component/loading-layer";
 import ChatContext from "./context/chat-context";
@@ -22,6 +21,8 @@ import VideoSingle from "./feature/video/video-single";
 import { ChatClient, CommandChannelClient, MediaStream, RecordingClient } from "./index-types";
 import "./App.css";
 import { isAndroidBrowser } from "./utils/platform";
+
+import "antd/dist/antd.css";
 
 declare global {
   interface Window {

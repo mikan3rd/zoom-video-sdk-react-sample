@@ -109,7 +109,7 @@ const getDataSouce = (
   return streamMertics.map((metrics, index) => {
     let send = "";
     let receive = "";
-    if (encodingData != null) {
+    if (encodingData !== null) {
       let value;
       if (Array.isArray(metrics.value)) {
         value = metrics.value.map((m: string) => (encodingData as { [key: string]: any })[m]);
@@ -118,7 +118,7 @@ const getDataSouce = (
       }
       send = value === 0 ? "-" : metrics.format(value);
     }
-    if (decodingData != null) {
+    if (decodingData !== null) {
       let value;
       if (Array.isArray(metrics.value)) {
         value = metrics.value.map((m: string) => (decodingData as { [key: string]: any })[m]);
@@ -236,7 +236,7 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
     }
   }, [defaultTab]);
   useMount(() => {
-    if (mediaStream != null) {
+    if (mediaStream !== null) {
       const { encode: audioEncoding, decode: audioDecoding } = mediaStream.getAudioStatisticData();
       const { encode: videoEncoding, decode: videoDecoding } = mediaStream.getVideoStatisticData();
       setAudioDecodingStatistic(audioDecoding);

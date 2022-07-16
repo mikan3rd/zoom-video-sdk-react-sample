@@ -24,7 +24,7 @@ export function useCanvasDimension(
   );
   useSizeCallback(videoRef.current, onCanvasResize);
   useMount(() => {
-    if (videoRef.current != null) {
+    if (videoRef.current !== null) {
       const { width, height } = videoRef.current.getBoundingClientRect();
       setDimension({ width, height });
     }
@@ -32,7 +32,7 @@ export function useCanvasDimension(
   useEffect(() => {
     const { width, height } = dimension;
     try {
-      if (videoRef.current != null) {
+      if (videoRef.current !== null) {
         videoRef.current.width = width;
         videoRef.current.height = height;
       }

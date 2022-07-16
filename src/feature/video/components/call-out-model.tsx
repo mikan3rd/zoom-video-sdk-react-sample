@@ -115,7 +115,7 @@ const CallOutModel = (props: CallOutModelProps) => {
           }
         </Form.Item>
       </Form>
-      {phoneCallStatus != null && (
+      {phoneCallStatus !== null && (
         <div className="phone-call-status">
           Phone call status:
           <span className={classNames("status-text", phoneCallStatus.type)}>{phoneCallStatus.text}</span>

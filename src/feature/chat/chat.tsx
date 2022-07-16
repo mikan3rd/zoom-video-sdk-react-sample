@@ -8,7 +8,7 @@ import ChatContext from "../../context/chat-context";
 import ZoomContext from "../../context/zoom-context";
 import { useMount } from "../../hooks";
 
-import { ChatReceiver, ChatRecord } from "./chat-types";
+import { ChatReceiver, ChatRecord } from "./chat-types.d";
 import ChatMessageItem from "./component/chat-message-item";
 import ChatReceiverContainer from "./component/chat-receiver";
 import { useParticipantsChange } from "./hooks/useParticipantsChange";
@@ -52,7 +52,7 @@ const ChatContainer = () => {
           }
         }),
       );
-      if (chatWrapRef.current != null) {
+      if (chatWrapRef.current !== null) {
         chatWrapRef.current.scrollTo(0, chatWrapRef.current.scrollHeight);
       }
     },
@@ -61,7 +61,7 @@ const ChatContainer = () => {
   const onChatPrivilegeChange = useCallback(
     (payload) => {
       setChatPrivilege(payload.chatPrivilege);
-      if (chatClient != null) {
+      if (chatClient !== null) {
         setChatReceivers(chatClient.getReceivers());
       }
     },
@@ -83,14 +83,14 @@ const ChatContainer = () => {
     };
   }, [zmClient, onChatPrivilegeChange]);
   useParticipantsChange(zmClient, () => {
-    if (chatClient != null) {
+    if (chatClient !== null) {
       setChatReceivers(chatClient.getReceivers());
     }
     setIsHost(zmClient.isHost());
     // setIsManager(zmClient.isManager());
   });
   useEffect(() => {
-    if (chatUser != null) {
+    if (chatUser !== null) {
       const index = chatReceivers.findIndex((user) => user.userId === chatUser.userId);
       if (index === -1) {
         setChatUser(chatReceivers[0]);
@@ -104,7 +104,7 @@ const ChatContainer = () => {
   const setChatUserId = useCallback(
     (userId) => {
       const user = chatReceivers.find((u) => u.userId === userId);
-      if (user != null) {
+      if (user !== null) {
         setChatUser(user);
       }
     },
@@ -113,7 +113,7 @@ const ChatContainer = () => {
   const sendMessage = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       event.preventDefault();
-      if (chatUser != null && chatDraft) {
+      if (chatUser !== null && chatDraft) {
         chatClient?.send(chatDraft, chatUser.userId);
         setChatDraft("");
       }
@@ -122,7 +122,7 @@ const ChatContainer = () => {
   );
   useMount(() => {
     setCurrentUserId(zmClient.getSessionInfo().userId);
-    if (chatClient != null) {
+    if (chatClient !== null) {
       setChatPrivilege(chatClient.getPrivilege());
     }
   });

@@ -17,7 +17,7 @@ export function useEventListener(
       targetElement = target as HTMLElement;
     }
     if (targetElement && targetElement.addEventListener) {
-      const eventListener = (event: Event) => handlerRef.current != null && handlerRef.current(event);
+      const eventListener = (event: Event) => handlerRef.current !== null && handlerRef.current(event);
       targetElement.addEventListener(eventName, eventListener, {
         capture: options.capture,
         passive: options.passive,

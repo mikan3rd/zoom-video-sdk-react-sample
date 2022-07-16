@@ -58,7 +58,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
   const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(zmClient, mediaStream, shareRef);
   const isSharing = isRecieveSharing || isStartedShare;
   useEffect(() => {
-    if (isSharing && shareContainerRef.current != null) {
+    if (isSharing && shareContainerRef.current !== null) {
       const { width, height } = sharedContentDimension;
       const { width: containerWidth, height: containerHeight } = containerDimension;
       const ratio = Math.min(containerWidth / width, containerHeight / height, 1);

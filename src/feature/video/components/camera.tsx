@@ -38,7 +38,7 @@ const CameraButton = (props: CameraButtonProps) => {
       onSwitchCamera(payload.key);
     }
   };
-  const menu = cameraList != null && cameraList.length > 0 && (
+  const menu = cameraList !== null && cameraList.length > 0 && (
     <Menu onClick={onMenuItemClick} theme="dark" className="camera-menu">
       <Menu.ItemGroup title="Select a Camera">
         {cameraList.map((item) => (

@@ -30,13 +30,13 @@ export function useDrag(options: DragOption): getDragPropsFn {
     key: JSON.stringify(data),
     draggable: "true",
     onDragStart: (e) => {
-      if (options && options.onDragStart != null) {
+      if (options && options.onDragStart !== null) {
         options.onDragStart(data, e);
       }
       e.dataTransfer.setData("custom", JSON.stringify(data));
     },
     onDragEnd: (e) => {
-      if (options && options.onDragEnd != null) {
+      if (options && options.onDragEnd !== null) {
         options.onDragEnd(data, e);
       }
     },
@@ -50,7 +50,7 @@ export function useDrop(options: DropAreaOptions): [DropProps, DropAreaState] {
   const onDrop = useCallback((dataTransfer: DataTransfer, event: React.DragEvent | React.ClipboardEvent) => {
     const uri = dataTransfer.getData("text/uri-list");
     const dom = dataTransfer.getData("custom");
-    if (dom && optionsRef.current.onDom != null) {
+    if (dom && optionsRef.current.onDom !== null) {
       let data = dom;
       try {
         data = JSON.parse(dom);
@@ -58,11 +58,11 @@ export function useDrop(options: DropAreaOptions): [DropProps, DropAreaState] {
         // nothing
       }
       optionsRef.current.onDom(data, event as React.DragEvent);
-    } else if (uri && optionsRef.current.onUri != null) {
+    } else if (uri && optionsRef.current.onUri !== null) {
       optionsRef.current.onUri(uri, event as React.DragEvent);
-    } else if (dataTransfer.files && dataTransfer.files.length > 0 && optionsRef.current.onFiles != null) {
+    } else if (dataTransfer.files && dataTransfer.files.length > 0 && optionsRef.current.onFiles !== null) {
       optionsRef.current.onFiles(Array.from(dataTransfer.files), event as React.DragEvent);
-    } else if (dataTransfer.items && dataTransfer.items.length && optionsRef.current.onText != null) {
+    } else if (dataTransfer.items && dataTransfer.items.length && optionsRef.current.onText !== null) {
       dataTransfer.items[0].getAsString((text) => {
         optionsRef.current.onText?.(text, event as React.ClipboardEvent);
       });

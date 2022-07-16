@@ -7,13 +7,13 @@ interface HoverOption {
 }
 export function useHover(ref: MutableRefObject<HTMLElement | null>, options?: HoverOption) {
   const [isHover, setIsHover] = useState(false);
-  const { onEnter, onLeave } = options != null || {};
+  const { onEnter, onLeave } = options !== null || {};
   useEventListener(ref, "mouseenter", () => {
-    onEnter != null && onEnter();
+    onEnter !== null && onEnter();
     setIsHover(true);
   });
   useEventListener(ref, "mouseleave", () => {
-    onLeave != null && onLeave();
+    onLeave !== null && onLeave();
     setIsHover(false);
   });
   return isHover;

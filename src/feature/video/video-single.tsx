@@ -67,7 +67,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
   );
   const isCurrentUserStartedVideo = zmClient.getCurrentUserInfo().bVideoOn;
   useEffect(() => {
-    if (mediaStream != null && videoRef.current != null && isVideoDecodeReady) {
+    if (mediaStream !== null && videoRef.current !== null && isVideoDecodeReady) {
       if (activeUser?.bVideoOn !== previousActiveUser.current?.bVideoOn) {
         if (activeUser?.bVideoOn) {
           mediaStream.renderVideo(
@@ -105,12 +105,12 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
     }
   }, [mediaStream, activeUser, isVideoDecodeReady, canvasDimension]);
   useMount(() => {
-    if (mediaStream != null) {
+    if (mediaStream !== null) {
       setActiveVideo(mediaStream.getActiveVideoId());
     }
   });
   useEffect(() => {
-    if (isSharing && shareContainerRef.current != null) {
+    if (isSharing && shareContainerRef.current !== null) {
       const { width, height } = sharedContentDimension;
       const { width: containerWidth, height: containerHeight } = containerDimension;
       const ratio = Math.min(containerWidth / width, containerHeight / height, 1);
@@ -180,7 +180,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
             })}
           />
         )}
-        {activeUser != null && <Avatar participant={activeUser} isActive={false} className="single-view-avatar" />}
+        {activeUser !== null && <Avatar participant={activeUser} isActive={false} className="single-view-avatar" />}
       </div>
       <VideoFooter className="video-operations" sharing shareRef={selfShareRef} />
     </div>

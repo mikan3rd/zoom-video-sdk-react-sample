@@ -22,13 +22,13 @@ export function useRenderVideo(
    */
   const isSkipSelfVideo = !window.crossOriginIsolated;
   useEffect(() => {
-    if (videoRef.current != null && layout && layout.length > 0 && isVideoDecodeReady) {
-      const addedSubscribers = subscribedVideos.filter((id) => !(previousSubscribedVideos != null || []).includes(id));
-      const removedSubscribers = (previousSubscribedVideos != null || []).filter(
+    if (videoRef.current !== null && layout && layout.length > 0 && isVideoDecodeReady) {
+      const addedSubscribers = subscribedVideos.filter((id) => !(previousSubscribedVideos !== null || []).includes(id));
+      const removedSubscribers = (previousSubscribedVideos !== null || []).filter(
         (id: number) => !subscribedVideos.includes(id),
       );
       const unalteredSubscribers = subscribedVideos.filter((id) =>
-        (previousSubscribedVideos != null || []).includes(id),
+        (previousSubscribedVideos !== null || []).includes(id),
       );
       if (removedSubscribers.length > 0) {
         removedSubscribers.forEach(async (userId: number) => {
@@ -50,7 +50,7 @@ export function useRenderVideo(
       if (unalteredSubscribers.length > 0) {
         // layout changed
         if (
-          previousLayout != null &&
+          previousLayout !== null &&
           (layout.length !== previousLayout.length || !isShallowEqual(layout[0], previousLayout[0]))
         ) {
           unalteredSubscribers.forEach((userId) => {

@@ -50,7 +50,7 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
   const [isPhoneModelOpen, setIsPhoneModelOpen] = useState(false);
   const tooltipText = isStartedAudio ? (isMuted ? "unmute" : "mute") : "start audio";
   const menu = [];
-  if (microphoneList != null && microphoneList.length > 0 && audio !== "phone") {
+  if (microphoneList !== null && microphoneList.length > 0 && audio !== "phone") {
     menu.push({
       group: "microphone",
       title: "Select a Microphone",
@@ -61,7 +61,7 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
       })),
     });
   }
-  if (speakerList != null && speakerList.length > 0 && audio !== "phone") {
+  if (speakerList !== null && speakerList.length > 0 && audio !== "phone") {
     menu.push({
       group: "speaker",
       title: "Select a speaker",

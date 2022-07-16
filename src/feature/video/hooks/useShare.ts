@@ -54,7 +54,7 @@ export function useShare(
   }, [zmClient, onActiveShareChange, onSharedContentDimensionChange, onCurrentUserUpdate]);
   const previousIsRecieveSharing = usePrevious(isRecieveSharing);
   useEffect(() => {
-    if (shareRef.current != null && previousIsRecieveSharing !== isRecieveSharing) {
+    if (shareRef.current !== null && previousIsRecieveSharing !== isRecieveSharing) {
       if (isRecieveSharing) {
         mediaStream?.startShareView(shareRef.current as HTMLCanvasElement, activeSharingId);
       } else if (previousIsRecieveSharing === true && isRecieveSharing === false) {
@@ -63,7 +63,7 @@ export function useShare(
     }
   }, [mediaStream, shareRef, previousIsRecieveSharing, isRecieveSharing, activeSharingId]);
   useEffect(() => {
-    if (mediaStream != null) {
+    if (mediaStream !== null) {
       const activeSharedUserId = mediaStream.getActiveShareUserId();
       if (activeSharedUserId) {
         setIsReceiveSharing(true);
