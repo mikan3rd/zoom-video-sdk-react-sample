@@ -9,7 +9,7 @@ import ZoomContext from "../../../context/zoom-context";
 import { useMount, useUnmount } from "../../../hooks";
 import { isAndroidBrowser, isSupportOffscreenCanvas } from "../../../utils/platform";
 import { SELF_VIDEO_ID, getPhoneCallStatusDescription } from "../video-constants";
-import { MediaDevice } from "../video-types";
+import { MediaDevice } from "../video-types.d";
 
 import AudioVideoStatisticModal from "./audio-video-statistic";
 import CameraButton from "./camera";

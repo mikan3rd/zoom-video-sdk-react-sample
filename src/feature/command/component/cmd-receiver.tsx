@@ -4,7 +4,7 @@ import { CheckOutlined, DownOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Menu } from "antd";
 import classNames from "classnames";
 
-import { CommandReceiver } from "../cmd-types";
+import { CommandReceiver } from "../cmd-types.d";
 import "./cmd-receiver.scss";
 const { Item: MenuItem, ItemGroup: MenuItemGroup } = Menu;
 

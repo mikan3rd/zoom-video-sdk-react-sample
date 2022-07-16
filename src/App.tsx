@@ -18,7 +18,7 @@ import Preview from "./feature/preview/preview";
 import Video from "./feature/video/video";
 import VideoNonSAB from "./feature/video/video-non-sab";
 import VideoSingle from "./feature/video/video-single";
-import { ChatClient, CommandChannelClient, MediaStream, RecordingClient } from "./index-types";
+import { ChatClient, CommandChannelClient, MediaStream, RecordingClient } from "./index-types.d";
 import "./App.css";
 import { isAndroidBrowser } from "./utils/platform";
 

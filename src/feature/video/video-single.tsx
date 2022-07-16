@@ -8,7 +8,7 @@ import { RouteComponentProps } from "react-router-dom";
 import ZoomMediaContext from "../../context/media-context";
 import ZoomContext from "../../context/zoom-context";
 import { useMount, useSizeCallback } from "../../hooks";
-import { Participant } from "../../index-types";
+import { Participant } from "../../index-types.d";
 import "./video.scss";
 import { isAndroidBrowser, isSupportOffscreenCanvas, isSupportWebCodecs } from "../../utils/platform";
 import { isShallowEqual } from "../../utils/util";

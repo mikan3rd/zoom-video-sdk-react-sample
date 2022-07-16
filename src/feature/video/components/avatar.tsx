@@ -4,7 +4,7 @@ import { AudioMutedOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 
 import "./avatar.scss";
-import { Participant } from "../../../index-types";
+import { Participant } from "../../../index-types.d";
 interface AvatarProps {
   participant: Participant;
   style?: { [key: string]: string };

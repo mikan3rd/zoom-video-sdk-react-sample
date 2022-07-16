@@ -8,7 +8,7 @@ import RecordingContext from "../../context/recording-context";
 import ZoomContext from "../../context/zoom-context";
 import { useMount } from "../../hooks";
 
-import { CommandReceiver, CommandRecord } from "./cmd-types";
+import { CommandReceiver, CommandRecord } from "./cmd-types.d";
 import ChatMessageItem from "./component/cmd-message-item";
 import CommandReceiverContainer from "./component/cmd-receiver";
 import { useParticipantsChange } from "./hooks/useParticipantsChange";

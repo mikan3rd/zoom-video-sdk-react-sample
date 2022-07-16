@@ -5,7 +5,7 @@ import { Button, Dropdown, Menu, Tooltip } from "antd";
 import classNames from "classnames";
 
 import "./camera.scss";
-import { MediaDevice } from "../video-types";
+import { MediaDevice } from "../video-types.d";
 interface CameraButtonProps {
   isStartedVideo: boolean;
   isMirrored?: boolean;

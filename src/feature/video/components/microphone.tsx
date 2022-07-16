@@ -7,7 +7,7 @@ import classNames from "classnames";
 
 import { IconFont } from "../../../component/icon-font";
 import "./microphone.scss";
-import { MediaDevice } from "../video-types";
+import { MediaDevice } from "../video-types.d";
 
 import CallOutModel from "./call-out-model";
 const { Button: DropdownButton } = Dropdown;

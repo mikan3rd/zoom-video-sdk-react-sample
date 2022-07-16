@@ -5,7 +5,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import classNames from "classnames";
 
-import { CommandRecord } from "../cmd-types";
+import { CommandRecord } from "../cmd-types.d";
 import "./cmd-message-item.scss";
 interface CmdMessageItemProps {
   record: CommandRecord;

@@ -10,7 +10,7 @@ import MicrophoneButton from "../video/components/microphone";
 
 import { message } from "antd";
 
-import { MediaDevice } from "../video/video-types";
+import { MediaDevice } from "../video/video-types.d";
 
 // label: string;
 // deviceId: string;
