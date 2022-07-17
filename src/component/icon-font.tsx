@@ -14,19 +14,18 @@ import { ReactComponent as IconRecordingAnimatedHovered } from "./svgs/icon-reco
 import { ReactComponent as IconRecordingAnimated } from "./svgs/icon-recording-animated.svg";
 import { ReactComponent as IconRecording } from "./svgs/icon-recording-default.svg";
 import { ReactComponent as IconRecordingHovered } from "./svgs/icon-recording-hovered.svg";
+import { ReactComponent as IconRecordingPauseHovered } from "./svgs/icon-recording-pause-hovered.svg";
+import { ReactComponent as IconRecordingPause } from "./svgs/icon-recording-pause.svg";
 import { ReactComponent as IconRecordingResumeHovered } from "./svgs/icon-recording-resume-hovered.svg";
 import { ReactComponent as IconRecordingResume } from "./svgs/icon-recording-resume.svg";
 import { ReactComponent as IconRecordingStopHovered } from "./svgs/icon-recording-stop-hovered.svg";
 import { ReactComponent as IconRecordingStop } from "./svgs/icon-recording-stop.svg";
-import { ReactComponent as IconRemoteControl } from './svgs/icon-remote-control.svg';
-import { ReactComponent as IconResume } from './svgs/icon-resume.svg';
-import { ReactComponent as IconShare } from './svgs/icon-share.svg';
-import { ReactComponent as IconSpotlight } from './svgs/icon-spotlight.svg';
-import { ReactComponent as IconStart } from './svgs/icon-start.svg';
-import { ReactComponent as IconStop } from './svgs/icon-stop.svg';
-
-import { ReactComponent as IconRecordingPause } from "./svgs/icon-recording-pause.svg";
-import { ReactComponent as IconRecordingPauseHovered } from "./svgs/icon-recording-pause-hovered.svg";
+import { ReactComponent as IconRemoteControl } from "./svgs/icon-remote-control.svg";
+import { ReactComponent as IconResume } from "./svgs/icon-resume.svg";
+import { ReactComponent as IconShare } from "./svgs/icon-share.svg";
+import { ReactComponent as IconSpotlight } from "./svgs/icon-spotlight.svg";
+import { ReactComponent as IconStart } from "./svgs/icon-start.svg";
+import { ReactComponent as IconStop } from "./svgs/icon-stop.svg";
 
 const iconComponentMap: { [key: string]: any } = {
   "icon-advanced": IconAdvanced,

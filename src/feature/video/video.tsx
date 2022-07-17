@@ -126,6 +126,9 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
               return null;
             }
             const dimension = videoLayout[index];
+            if (dimension === undefined) {
+              return null;
+            }
             const { width, height, x, y } = dimension;
             const { height: canvasHeight } = canvasDimension;
             return (

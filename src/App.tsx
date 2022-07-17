@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useReducer, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useReducer, useState } from "react";
 
 import ZoomVideo, { ConnectionState } from "@zoom/videosdk";
 import { Modal, message } from "antd";
@@ -19,10 +19,10 @@ import Video from "./feature/video/video";
 import VideoNonSAB from "./feature/video/video-non-sab";
 import VideoSingle from "./feature/video/video-single";
 import { ChatClient, CommandChannelClient, MediaStream, RecordingClient } from "./index-types.d";
-import "./App.css";
 import { isAndroidBrowser } from "./utils/platform";
 
 import "antd/dist/antd.css";
+import "./App.css";
 
 declare global {
   interface Window {
@@ -110,7 +110,7 @@ function App(props: AppProps) {
   const zmClient = useContext(ZoomContext);
   const webEndpoint = "zoom.us";
   const mediaContext = useMemo(() => ({ ...mediaState, mediaStream }), [mediaState, mediaStream]);
-  const galleryViewWithoutSAB = !!enforceGalleryView && !window.crossOriginIsolated;
+  const galleryViewWithoutSAB = enforceGalleryView !== undefined && !window.crossOriginIsolated;
   useEffect(() => {
     const init = async () => {
       await zmClient.init("en-US", `${window.location.origin}/lib`, {
@@ -131,7 +131,7 @@ function App(props: AppProps) {
         setRecordingClient(recordingClient);
         setIsLoading(false);
       } catch (e: any) {
-        console.log("Error joining meeting", e);
+        console.info("Error joining meeting", e);
         setIsLoading(false);
         message.error(e.reason);
       }
@@ -175,11 +175,11 @@ function App(props: AppProps) {
   }, []);
 
   const onDialoutChange = useCallback((payload) => {
-    console.log("onDialoutChange", payload);
+    console.info("onDialoutChange", payload);
   }, []);
 
   const onAudioMerged = useCallback((payload) => {
-    console.log("onAudioMerged", payload);
+    console.info("onAudioMerged", payload);
   }, []);
 
   const onLeaveOrJoinSession = useCallback(async () => {

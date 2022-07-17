@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 
 import { CheckOutlined, DownOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Menu } from "antd";
@@ -6,7 +6,7 @@ import classNames from "classnames";
 
 import { CommandReceiver } from "../cmd-types.d";
 import "./cmd-receiver.scss";
-const { Item: MenuItem, ItemGroup: MenuItemGroup } = Menu;
+const { Item: MenuItem } = Menu;
 
 interface CommandReceiverProps {
   chatUsers: CommandReceiver[];
@@ -26,8 +26,8 @@ const CommandReceiverContainer = (props: CommandReceiverProps) => {
       icon={item.userId === selectedChatUser?.userId && <CheckOutlined />}
     >
       {currentUserId === item.userId ? item.displayName + "(Me)" : item.displayName}
-      {(item.isCoHost || item.isHost) && (
-        <span className="chat-receiver-item-affix">({item.isHost ? "Host" : "Co-host"})</span>
+      {(item.isCoHost === true || item.isHost !== undefined) && (
+        <span className="chat-receiver-item-affix">({item.isHost === true ? "Host" : "Co-host"})</span>
       )}
     </MenuItem>
   ));

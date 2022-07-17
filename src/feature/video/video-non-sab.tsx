@@ -67,9 +67,9 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
     (user) => user.userId === zmClient.getCurrentUserInfo().userId,
   );
   let selfVideoLayout = null;
-  if (currentUserIndex) {
+  if (currentUserIndex > -1) {
     const item = videoLayout[currentUserIndex];
-    if (item && canvasDimension) {
+    if (item !== undefined) {
       selfVideoLayout = { ...item, y: canvasDimension.height - item.y - item.height };
     }
   }
@@ -160,6 +160,9 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
               return null;
             }
             const dimension = videoLayout[index];
+            if (dimension === undefined) {
+              return null;
+            }
             const { width, height, x, y } = dimension;
             const { height: canvasHeight } = canvasDimension;
             return (

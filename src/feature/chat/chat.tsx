@@ -24,7 +24,7 @@ const ChatContainer = () => {
   const [chatPrivilege, setChatPrivilege] = useState<ChatPrivilege>(ChatPrivilege.All);
   const [chatUser, setChatUser] = useState<ChatReceiver | null>(null);
   const [isHost, setIsHost] = useState<boolean>(false);
-  const [isManager, setIsManager] = useState<boolean>(false);
+  const [isManager] = useState<boolean>(false);
   const [chatDraft, setChatDraft] = useState<string>("");
   const chatWrapRef = useRef<HTMLDivElement | null>(null);
   const onChatMessage = useCallback(
@@ -35,7 +35,7 @@ const ChatContainer = () => {
           if (length > 0) {
             const lastRecord = records[length - 1];
             if (
-              payload.sender.userId === lastRecord.sender.userId &&
+              payload.sender.userId === lastRecord?.sender.userId &&
               payload.receiver.userId === lastRecord.receiver.userId &&
               payload.timestamp - lastRecord.timestamp < 1000 * 60 * 5
             ) {
@@ -92,11 +92,11 @@ const ChatContainer = () => {
   useEffect(() => {
     if (chatUser !== null) {
       const index = chatReceivers.findIndex((user) => user.userId === chatUser.userId);
-      if (index === -1) {
+      if (index === -1 && chatReceivers[0] !== undefined) {
         setChatUser(chatReceivers[0]);
       }
     } else {
-      if (chatReceivers.length > 0) {
+      if (chatReceivers.length > 0 && chatReceivers[0] !== undefined) {
         setChatUser(chatReceivers[0]);
       }
     }

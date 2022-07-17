@@ -64,7 +64,7 @@ const CommandContainer = () => {
           if (length > 0) {
             const lastRecord = records[length - 1];
             if (
-              payload.senderId === lastRecord.sender.userId &&
+              payload.senderId === lastRecord?.sender.userId &&
               payload.receiverId === lastRecord.receiver.userId &&
               payload.timestamp - lastRecord.timestamp < 1000 * 60 * 5
             ) {
@@ -109,11 +109,11 @@ const CommandContainer = () => {
   useEffect(() => {
     if (command !== null) {
       const index = commandReceivers.findIndex((user) => user.userId === command.userId);
-      if (index === -1) {
+      if (index === -1 && commandReceivers[0] !== undefined) {
         setCommandUser(commandReceivers[0]);
       }
     } else {
-      if (commandReceivers.length > 0) {
+      if (commandReceivers.length > 0 && commandReceivers[0] !== undefined) {
         setCommandUser(commandReceivers[0]);
       }
     }

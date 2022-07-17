@@ -1,21 +1,18 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import ZoomVideo from "@zoom/videosdk";
-import { produce } from "immer";
+import { message } from "antd";
 
 import { useMount } from "../../hooks";
 import "./preview.scss";
 import CameraButton from "../video/components/camera";
 import MicrophoneButton from "../video/components/microphone";
-
-import { message } from "antd";
-
 import { MediaDevice } from "../video/video-types.d";
 
 // label: string;
 // deviceId: string;
 let prevMicFeedbackStyle = "";
-let micFeedBackInteval: any = "";
+let micFeedBackInteval: NodeJS.Timer | null = null;
 
 let localAudio = ZoomVideo.createLocalAudioTrack();
 let localVideo = ZoomVideo.createLocalVideoTrack();
@@ -53,7 +50,7 @@ const AUDIO_MASK = 1,
   MIC_MASK = 2,
   VIDEO_MASK = 4;
 
-let PREVIEW_VIDEO: any;
+let PREVIEW_VIDEO: HTMLVideoElement | null = null;
 
 const updateMicFeedbackStyle = () => {
   const newVolumeIntensity = localAudio.getCurrentVolume();
@@ -74,15 +71,15 @@ const updateMicFeedbackStyle = () => {
   } else {
     newMicFeedbackStyle = "mic-feedback__max";
   }
-  const micIcon: any = document.getElementById("auido-volume-feedback");
-  if (prevMicFeedbackStyle !== "" && micIcon) {
+  const micIcon = document.getElementById("auido-volume-feedback");
+  if (prevMicFeedbackStyle !== "" && micIcon !== null) {
     micIcon.classList.toggle(prevMicFeedbackStyle);
   }
 
-  if (newMicFeedbackStyle !== "" && micIcon) {
+  if (newMicFeedbackStyle !== "" && micIcon !== null) {
     micIcon.classList.toggle(newMicFeedbackStyle);
   }
-  console.log(newMicFeedbackStyle, newVolumeIntensity);
+  console.info(newMicFeedbackStyle, newVolumeIntensity);
   prevMicFeedbackStyle = newMicFeedbackStyle;
 };
 
@@ -109,17 +106,17 @@ const PreviewContainer = () => {
   const [isMuted, setIsMuted] = useState<boolean>(true);
   const [isStartedVideo, setIsStartedVideo] = useState<boolean>(false);
   const [micList, setMicList] = useState<MediaDevice[]>([]);
-  const [speakerList, setSpeakerList] = useState<MediaDevice[]>([]);
+  const [speakerList] = useState<MediaDevice[]>([]);
   const [cameraList, setCameraList] = useState<MediaDevice[]>([]);
   const [activeMicrophone, setActiveMicrophone] = useState("");
-  const [activeSpeaker, setActiveSpeaker] = useState("");
+  const [activeSpeaker] = useState("");
   const [activeCamera, setActiveCamera] = useState("");
 
   const onCameraClick = useCallback(async () => {
     if (isStartedVideo) {
       await localVideo.stop();
       setIsStartedVideo(false);
-    } else {
+    } else if (PREVIEW_VIDEO !== null) {
       await localVideo.start(PREVIEW_VIDEO);
       setIsStartedVideo(true);
     }
@@ -132,7 +129,7 @@ const PreviewContainer = () => {
         setIsMuted(false);
       } else {
         await localAudio.mute();
-        if (micFeedBackInteval) {
+        if (micFeedBackInteval !== null) {
           clearInterval(micFeedBackInteval);
         }
         setIsMuted(true);
@@ -145,7 +142,7 @@ const PreviewContainer = () => {
   const onMicrophoneMenuClick = async (key: string) => {
     const [type, deviceId] = key.split("|");
     if (type === "microphone") {
-      if (deviceId !== activeMicrophone) {
+      if (deviceId !== undefined && deviceId !== activeMicrophone) {
         await localAudio.stop();
         setIsMuted(true);
         localAudio = ZoomVideo.createLocalAudioTrack(deviceId);
@@ -158,29 +155,30 @@ const PreviewContainer = () => {
     }
   };
   const onSwitchCamera = async (key: string) => {
-    if (localVideo) {
-      if (activeCamera !== key) {
-        await localVideo.stop();
-        localVideo = ZoomVideo.createLocalVideoTrack(key);
-        localVideo.start(PREVIEW_VIDEO);
-        setActiveCamera(key);
-      }
+    if (activeCamera !== key && PREVIEW_VIDEO !== null) {
+      await localVideo.stop();
+      localVideo = ZoomVideo.createLocalVideoTrack(key);
+      localVideo.start(PREVIEW_VIDEO);
+      setActiveCamera(key);
     }
   };
 
   useEffect(() => {
     const encodeVal = encodePreviewOptions(isStartedAudio, isMuted, isStartedVideo);
-    console.log("preview encode val", encodeVal);
+    console.info("preview encode val", encodeVal);
     const decodeOption = decodePreviewOptions(encodeVal);
-    console.log("preview config", decodePreviewOptions(encodeVal));
+    console.info("preview config", decodePreviewOptions(encodeVal));
     message.info(JSON.stringify(decodeOption, null, 2));
-    console.log(micList);
-  }, [isStartedAudio, isMuted, isStartedVideo]);
+    console.info(micList);
+  }, [isStartedAudio, isMuted, isStartedVideo, micList]);
 
   useMount(() => {
-    PREVIEW_VIDEO = document.getElementById("js-preview-video");
+    const element = document.getElementById("js-preview-video");
+    if (element !== null) {
+      PREVIEW_VIDEO = element as HTMLVideoElement;
+    }
     mountDevices().then((devices) => {
-      console.log("devicesdevicesdevicesdevices", devices);
+      console.info(devices);
       setMicList(devices.mics);
       setCameraList(devices.cameras);
       // setSpeakerList(devices.speakers);

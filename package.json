@@ -14,9 +14,7 @@
     "type-check": "tsc --noEmit"
   },
   "resolutions": {
-    "eslint-plugin-import": "2.26.0",
-    "eslint-plugin-react": "7.29.4",
-    "eslint-plugin-react-hooks": "4.5.0"
+    "eslint-plugin-import": "2.26.0"
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
@@ -58,8 +56,8 @@
     "eslint-import-resolver-webpack": "0.13.2",
     "eslint-plugin-emotion": "11.0.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "7.29.4",
-    "eslint-plugin-react-hooks": "4.5.0",
+    "eslint-plugin-react": "7.30.1",
+    "eslint-plugin-react-hooks": "4.6.0",
     "prettier": "2.6.2",
     "react-app-rewired": "2.1.8",
     "sass": "1.32.8",
