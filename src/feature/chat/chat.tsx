@@ -14,6 +14,7 @@ import ChatReceiverContainer from "./component/chat-receiver";
 import { useParticipantsChange } from "./hooks/useParticipantsChange";
 
 import "./chat.scss";
+
 const { TextArea } = Input;
 const ChatContainer = () => {
   const zmClient = useContext(ZoomContext);

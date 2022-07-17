@@ -1,5 +1,3 @@
-import React from "react";
-
 import { CheckOutlined, UpOutlined, VideoCameraAddOutlined, VideoCameraOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Menu, Tooltip } from "antd";
 import classNames from "classnames";

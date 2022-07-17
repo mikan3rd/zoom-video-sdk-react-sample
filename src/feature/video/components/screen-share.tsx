@@ -1,5 +1,3 @@
-import React from "react";
-
 import { LockOutlined, UnlockOutlined } from "@ant-design/icons";
 import { Button, Tooltip } from "antd";
 import classNames from "classnames";

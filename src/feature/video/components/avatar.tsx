@@ -1,5 +1,3 @@
-import React from "react";
-
 import { AudioMutedOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 

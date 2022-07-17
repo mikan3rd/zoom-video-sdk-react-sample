@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react";
+import { useCallback, useContext } from "react";
 
 import { CheckOutlined, DashOutlined, DownOutlined } from "@ant-design/icons";
 import { ChatPrivilege } from "@zoom/videosdk";
@@ -42,8 +42,8 @@ const ChatReceiverContainer = (props: ChatReceiverProps) => {
       icon={item.userId === selectedChatUser?.userId && <CheckOutlined />}
     >
       {item.displayName}
-      {(item.isCoHost || item.isHost) && (
-        <span className="chat-receiver-item-affix">({item.isHost ? "Host" : "Co-host"})</span>
+      {(item.isCoHost === true || item.isHost !== undefined) && (
+        <span className="chat-receiver-item-affix">({item.isHost === true ? "Host" : "Co-host"})</span>
       )}
     </MenuItem>
   ));
@@ -70,7 +70,7 @@ const ChatReceiverContainer = (props: ChatReceiverProps) => {
       {menuItems}
     </Menu>
   );
-  let privilegeMenu: any = null;
+  let privilegeMenu: JSX.Element | null = null;
   if (isHostOrManager) {
     const privilegeItems = meetingChatPrivilegeList;
     const privilegeMenuItems = privilegeItems.map((item) => (
@@ -102,7 +102,7 @@ const ChatReceiverContainer = (props: ChatReceiverProps) => {
           </Button>
         </Dropdown>
       </div>
-      {isHostOrManager && (
+      {isHostOrManager && privilegeMenu !== null && (
         <Dropdown overlay={privilegeMenu} placement="topRight" trigger={["click"]}>
           <Button className="chat-privilege-button">
             <DashOutlined />

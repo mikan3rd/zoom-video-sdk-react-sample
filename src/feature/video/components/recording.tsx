@@ -1,21 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { RecordingStatus } from "@zoom/videosdk";
 import { Button, Tooltip } from "antd";
 import classNames from "classnames";
 
-import { IconFont } from "../../../component/icon-font";
+import { IconFont, IconType } from "../../../component/icon-font";
 import "./recording.scss";
 
 export interface RecordButtonProps {
   text: string;
   tipText: string;
-  icon: string;
-  hoverIcon: string;
+  icon: IconType;
+  hoverIcon: IconType;
   onClick?: () => void;
 }
 
-export const recordStatusIcon = {
+export const recordStatusIcon: RecordButtonProps = {
   text: "Status",
   tipText: "Record Status",
   icon: "icon-recording-animated",
@@ -54,7 +54,7 @@ export const getRecordingButtons = (status: RecordingStatus | "", isHost: boolea
         hoverIcon: "icon-recording-stop-hover",
       },
     ];
-  } else if (status === RecordingStatus.Paused) {
+  } else {
     if (!isHost) return [recordStatusIcon];
     buttons = [
       recordStatusIcon,
@@ -83,7 +83,6 @@ const RecordingButton = (props: RecordButtonProps) => {
       <Button
         className={classNames("recording-operation-button", {})}
         icon={<IconFont type={isHover ? hoverIcon : icon} />}
-        // eslint-disable-next-line react/jsx-boolean-value
         ghost={true}
         shape="circle"
         size="large"

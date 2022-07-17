@@ -1,5 +1,3 @@
-import React from "react";
-
 import Icon from "@ant-design/icons";
 
 import { ReactComponent as IconAdvanced } from "./svgs/icon-advanced.svg";
@@ -27,7 +25,7 @@ import { ReactComponent as IconSpotlight } from "./svgs/icon-spotlight.svg";
 import { ReactComponent as IconStart } from "./svgs/icon-start.svg";
 import { ReactComponent as IconStop } from "./svgs/icon-stop.svg";
 
-const iconComponentMap: { [key: string]: any } = {
+const iconComponentMap = {
   "icon-advanced": IconAdvanced,
   "icon-chat": IconChat,
   "icon-group": IconGroup,
@@ -53,12 +51,16 @@ const iconComponentMap: { [key: string]: any } = {
   "icon-phone": IconPhone,
   "icon-phone-off": IconPhoneOff,
 };
+
+export type IconType = keyof typeof iconComponentMap;
+
 interface IconFontProps {
-  type: string;
-  style?: any;
+  type: IconType;
+  style?: React.CSSProperties;
 }
+
 export const IconFont = (props: IconFontProps) => {
   const { type, style } = props;
   const component = iconComponentMap[type];
-  return component ? <Icon component={component} style={{ ...(style || {}) }} /> : null;
+  return <Icon component={component} style={{ ...(style ?? {}) }} />;
 };

@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from "react";
 
 import { AudioMutedOutlined, AudioOutlined, CheckOutlined, UpOutlined } from "@ant-design/icons";
