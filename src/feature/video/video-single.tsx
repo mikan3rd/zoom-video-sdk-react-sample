@@ -9,7 +9,6 @@ import ZoomMediaContext from "../../context/media-context";
 import ZoomContext from "../../context/zoom-context";
 import { useMount, useSizeCallback } from "../../hooks";
 import { Participant } from "../../index-types.d";
-import "./video.scss";
 import { isAndroidBrowser, isSupportOffscreenCanvas, isSupportWebCodecs } from "../../utils/platform";
 import { isShallowEqual } from "../../utils/util";
 
@@ -19,6 +18,8 @@ import { useCanvasDimension } from "./hooks/useCanvasDimension";
 import { useParticipantsChange } from "./hooks/useParticipantsChange";
 import { useShare } from "./hooks/useShare";
 import { SELF_VIDEO_ID } from "./video-constants";
+
+import "./video.scss";
 
 const isUseVideoElementToDrawSelfVideo = isAndroidBrowser() || isSupportOffscreenCanvas();
 
@@ -69,7 +70,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
   useEffect(() => {
     if (mediaStream !== null && videoRef.current !== null && isVideoDecodeReady) {
       if (activeUser?.bVideoOn !== previousActiveUser.current?.bVideoOn) {
-        if (activeUser?.bVideoOn) {
+        if (activeUser?.bVideoOn !== undefined) {
           mediaStream.renderVideo(
             videoRef.current,
             activeUser.userId,
@@ -77,17 +78,17 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
             canvasDimension.height,
             0,
             0,
-            VideoQuality.Video_360P as any,
+            VideoQuality.Video_360P,
           );
         } else {
-          if (previousActiveUser.current?.bVideoOn) {
+          if (previousActiveUser.current?.bVideoOn === true) {
             mediaStream.stopRenderVideo(videoRef.current, previousActiveUser.current.userId);
           }
         }
       }
       if (
-        activeUser?.bVideoOn &&
-        previousActiveUser.current?.bVideoOn &&
+        activeUser?.bVideoOn === true &&
+        previousActiveUser.current?.bVideoOn === true &&
         activeUser.userId !== previousActiveUser.current.userId
       ) {
         mediaStream.stopRenderVideo(videoRef.current, previousActiveUser.current.userId);
@@ -98,7 +99,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
           canvasDimension.height,
           0,
           0,
-          VideoQuality.Video_360P as any,
+          VideoQuality.Video_360P,
         );
       }
       previousActiveUser.current = activeUser;
@@ -180,7 +181,9 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
             })}
           />
         )}
-        {activeUser !== null && <Avatar participant={activeUser} isActive={false} className="single-view-avatar" />}
+        {activeUser !== undefined && (
+          <Avatar participant={activeUser} isActive={false} className="single-view-avatar" />
+        )}
       </div>
       <VideoFooter className="video-operations" sharing shareRef={selfShareRef} />
     </div>

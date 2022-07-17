@@ -50,20 +50,20 @@ export function useDrop(options: DropAreaOptions): [DropProps, DropAreaState] {
   const onDrop = useCallback((dataTransfer: DataTransfer, event: React.DragEvent | React.ClipboardEvent) => {
     const uri = dataTransfer.getData("text/uri-list");
     const dom = dataTransfer.getData("custom");
-    if (dom && optionsRef.current.onDom !== null) {
+    if (dom !== "" && optionsRef.current.onDom !== undefined) {
       let data = dom;
       try {
         data = JSON.parse(dom);
       } catch (e) {
         // nothing
       }
-      optionsRef.current.onDom?.(data, event as React.DragEvent);
-    } else if (uri && optionsRef.current.onUri !== null) {
+      optionsRef.current.onDom(data, event as React.DragEvent);
+    } else if (uri !== "" && optionsRef.current.onUri !== undefined) {
       optionsRef.current.onUri(uri, event as React.DragEvent);
-    } else if (dataTransfer.files && dataTransfer.files.length > 0 && optionsRef.current.onFiles !== null) {
+    } else if (dataTransfer.files.length > 0 && optionsRef.current.onFiles !== undefined) {
       optionsRef.current.onFiles(Array.from(dataTransfer.files), event as React.DragEvent);
-    } else if (dataTransfer.items && dataTransfer.items.length && optionsRef.current.onText !== null) {
-      dataTransfer.items[0].getAsString((text) => {
+    } else if (dataTransfer.items.length > 0 && optionsRef.current.onText !== undefined) {
+      dataTransfer.items[0]?.getAsString((text) => {
         optionsRef.current.onText?.(text, event as React.ClipboardEvent);
       });
     }

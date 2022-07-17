@@ -1,9 +1,10 @@
 import { MutableRefObject, useEffect } from "react";
 
 import { usePersistFn, usePrevious } from "../../../hooks";
-import { MediaStream, Participant } from "../../../index-types";
+import { MediaStream, Participant } from "../../../index-types.d";
 import { isShallowEqual } from "../../../utils/util";
-import { CellLayout } from "../video-types";
+import { CellLayout } from "../video-types.d";
+
 export function useRenderVideo(
   mediaStream: MediaStream | null,
   isVideoDecodeReady: boolean,
@@ -22,18 +23,14 @@ export function useRenderVideo(
    */
   const isSkipSelfVideo = !window.crossOriginIsolated;
   useEffect(() => {
-    if (videoRef.current !== null && layout && layout.length > 0 && isVideoDecodeReady) {
-      const addedSubscribers = subscribedVideos.filter((id) => !(previousSubscribedVideos !== null || []).includes(id));
-      const removedSubscribers = (previousSubscribedVideos !== null || []).filter(
-        (id: number) => !subscribedVideos.includes(id),
-      );
-      const unalteredSubscribers = subscribedVideos.filter((id) =>
-        (previousSubscribedVideos !== null || []).includes(id),
-      );
+    if (videoRef.current !== null && layout.length > 0 && isVideoDecodeReady) {
+      const addedSubscribers = subscribedVideos.filter((id) => !(previousSubscribedVideos ?? []).includes(id));
+      const removedSubscribers = (previousSubscribedVideos ?? []).filter((id) => !subscribedVideos.includes(id));
+      const unalteredSubscribers = subscribedVideos.filter((id) => (previousSubscribedVideos ?? []).includes(id));
       if (removedSubscribers.length > 0) {
-        removedSubscribers.forEach(async (userId: number) => {
-          if (!isSkipSelfVideo || (isSkipSelfVideo && userId !== currentUserId)) {
-            await mediaStream?.stopRenderVideo(videoRef.current as HTMLCanvasElement, userId);
+        removedSubscribers.forEach(async (userId) => {
+          if ((!isSkipSelfVideo || userId !== currentUserId) && videoRef.current !== null) {
+            await mediaStream?.stopRenderVideo(videoRef.current, userId);
           }
         });
       }
@@ -41,7 +38,7 @@ export function useRenderVideo(
         addedSubscribers.forEach(async (userId) => {
           const index = participants.findIndex((user) => user.userId === userId);
           const cellDimension = layout[index];
-          if (cellDimension && (!isSkipSelfVideo || (isSkipSelfVideo && userId !== currentUserId))) {
+          if (cellDimension !== undefined && (!isSkipSelfVideo || userId !== currentUserId)) {
             const { width, height, x, y, quality } = cellDimension;
             await mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, userId, width, height, x, y, quality);
           }
@@ -56,9 +53,9 @@ export function useRenderVideo(
           unalteredSubscribers.forEach((userId) => {
             const index = participants.findIndex((user) => user.userId === userId);
             const cellDimension = layout[index];
-            if (cellDimension && (!isSkipSelfVideo || (isSkipSelfVideo && userId !== currentUserId))) {
+            if (cellDimension !== undefined && (!isSkipSelfVideo || userId !== currentUserId)) {
               const { width, height, x, y, quality } = cellDimension;
-              if (previousLayout && previousLayout[index] && previousLayout[index].quality !== quality) {
+              if (previousLayout[index] !== undefined && previousLayout[index]?.quality !== quality) {
                 mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, userId, width, height, x, y, quality);
               }
               mediaStream?.adjustRenderedVideoPosition(
@@ -81,7 +78,7 @@ export function useRenderVideo(
             const previousIndex = previousParticipantsIds?.findIndex((id) => id === userId);
             if (index !== previousIndex) {
               const cellDimension = layout[index];
-              if (cellDimension && (!isSkipSelfVideo || (isSkipSelfVideo && userId !== currentUserId))) {
+              if (cellDimension !== undefined && (!isSkipSelfVideo || userId !== currentUserId)) {
                 const { width, height, x, y } = cellDimension;
                 mediaStream?.adjustRenderedVideoPosition(
                   videoRef.current as HTMLCanvasElement,
@@ -116,7 +113,7 @@ export function useRenderVideo(
       subscribedVideos.forEach(async (userId) => {
         const index = participants.findIndex((user) => user.userId === userId);
         const cellDimension = layout[index];
-        if (cellDimension && (!isSkipSelfVideo || (isSkipSelfVideo && userId !== currentUserId))) {
+        if (cellDimension !== undefined && (!isSkipSelfVideo || userId !== currentUserId)) {
           const { width, height, x, y, quality } = cellDimension;
           await mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, userId, width, height, x, y, quality);
         }
