@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 import ZoomVideo from "@zoom/videosdk";
-import produce from "immer";
+import { produce } from "immer";
 
 import { useMount } from "../../hooks";
 import "./preview.scss";

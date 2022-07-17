@@ -30,13 +30,13 @@ export function useDrag(options: DragOption): getDragPropsFn {
     key: JSON.stringify(data),
     draggable: "true",
     onDragStart: (e) => {
-      if (options && options.onDragStart !== null) {
+      if (options.onDragStart !== undefined) {
         options.onDragStart(data, e);
       }
       e.dataTransfer.setData("custom", JSON.stringify(data));
     },
     onDragEnd: (e) => {
-      if (options && options.onDragEnd !== null) {
+      if (options.onDragEnd !== undefined) {
         options.onDragEnd(data, e);
       }
     },
@@ -57,7 +57,7 @@ export function useDrop(options: DropAreaOptions): [DropProps, DropAreaState] {
       } catch (e) {
         // nothing
       }
-      optionsRef.current.onDom(data, event as React.DragEvent);
+      optionsRef.current.onDom?.(data, event as React.DragEvent);
     } else if (uri && optionsRef.current.onUri !== null) {
       optionsRef.current.onUri(uri, event as React.DragEvent);
     } else if (dataTransfer.files && dataTransfer.files.length > 0 && optionsRef.current.onFiles !== null) {

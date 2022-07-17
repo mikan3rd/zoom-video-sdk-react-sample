@@ -1,3 +1,5 @@
+import React from "react";
+
 import { Checkbox, Form, Input, Modal, Select } from "antd";
 import classNames from "classnames";
 import "./call-out-model.scss";
@@ -115,7 +117,7 @@ const CallOutModel = (props: CallOutModelProps) => {
           }
         </Form.Item>
       </Form>
-      {phoneCallStatus !== null && (
+      {phoneCallStatus !== undefined && (
         <div className="phone-call-status">
           Phone call status:
           <span className={classNames("status-text", phoneCallStatus.type)}>{phoneCallStatus.text}</span>

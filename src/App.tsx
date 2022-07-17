@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useReducer, useStat
 
 import ZoomVideo, { ConnectionState } from "@zoom/videosdk";
 import { Modal, message } from "antd";
-import produce from "immer";
+import { produce } from "immer";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
 import LoadingLayer from "./component/loading-layer";

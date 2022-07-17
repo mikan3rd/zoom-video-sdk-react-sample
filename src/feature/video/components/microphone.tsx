@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 
 import { AudioMutedOutlined, AudioOutlined, CheckOutlined, UpOutlined } from "@ant-design/icons";
-import { Button, Dropdown, Input, Menu, Modal, Select, Tooltip } from "antd";
+import { Button, Dropdown, Menu, Tooltip } from "antd";
 import classNames from "classnames";
 
 import { IconFont } from "../../../component/icon-font";
@@ -50,7 +50,7 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
   const [isPhoneModelOpen, setIsPhoneModelOpen] = useState(false);
   const tooltipText = isStartedAudio ? (isMuted ? "unmute" : "mute") : "start audio";
   const menu = [];
-  if (microphoneList !== null && microphoneList.length > 0 && audio !== "phone") {
+  if (microphoneList !== undefined && microphoneList.length > 0 && audio !== "phone") {
     menu.push({
       group: "microphone",
       title: "Select a Microphone",
@@ -61,7 +61,7 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
       })),
     });
   }
-  if (speakerList !== null && speakerList.length > 0 && audio !== "phone") {
+  if (speakerList !== undefined && speakerList.length > 0 && audio !== "phone") {
     menu.push({
       group: "speaker",
       title: "Select a speaker",
@@ -107,7 +107,7 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
   const overlayMenu = (
     <Menu onClick={onMenuItemClick} theme="dark" className="microphone-menu">
       {menu.map((e) => {
-        if (e.group) {
+        if (e.group !== undefined) {
           const mItem = e.items.map((m) => (
             <Menu.Item key={`${e.group}|${m.value}`} icon={m.checked && <CheckOutlined />}>
               {m.label}
@@ -160,7 +160,7 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
         </DropdownButton>
       ) : (
         <Tooltip title={tooltipText}>
-          {isSupportPhone ? (
+          {isSupportPhone === true ? (
             <DropdownButton
               className={"microphone-dropdown-button"}
               size="large"

@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from "rea
 
 import { ChatPrivilege } from "@zoom/videosdk";
 import { Input } from "antd";
-import produce from "immer";
+import { produce } from "immer";
 
 import ChatContext from "../../context/chat-context";
 import ZoomContext from "../../context/zoom-context";
@@ -104,7 +104,7 @@ const ChatContainer = () => {
   const setChatUserId = useCallback(
     (userId) => {
       const user = chatReceivers.find((u) => u.userId === userId);
-      if (user !== null) {
+      if (user !== undefined) {
         setChatUser(user);
       }
     },
@@ -113,7 +113,7 @@ const ChatContainer = () => {
   const sendMessage = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       event.preventDefault();
-      if (chatUser !== null && chatDraft) {
+      if (chatUser !== null) {
         chatClient?.send(chatDraft, chatUser.userId);
         setChatDraft("");
       }

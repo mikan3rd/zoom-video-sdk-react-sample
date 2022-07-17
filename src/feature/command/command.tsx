@@ -1,10 +1,10 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 
+import { CommandChannelMsg } from "@zoom/videosdk";
 import { Input } from "antd";
-import produce from "immer";
+import { produce } from "immer";
 
 import CommandContext from "../../context/cmd-context";
-import RecordingContext from "../../context/recording-context";
 import ZoomContext from "../../context/zoom-context";
 import { useMount } from "../../hooks";
 
@@ -14,7 +14,7 @@ import CommandReceiverContainer from "./component/cmd-receiver";
 import { useParticipantsChange } from "./hooks/useParticipantsChange";
 
 import "./command.scss";
-import { CommandChannelMsg } from "@zoom/videosdk";
+
 const { TextArea } = Input;
 
 const oneToAllUser = {
@@ -44,20 +44,21 @@ const CommandContainer = () => {
     (payload: CommandChannelMsg) => {
       setCommandRecords(
         produce((records: CommandRecord[]) => {
-          console.log(payload);
+          console.info(payload);
           const length = records.length;
           const newPayload = {
             message: payload.text,
             sender: {
-              name: payload.senderName || "",
+              name: payload.senderName ?? "",
               userId: payload.senderId,
             },
-            receiver: payload.receiverId
-              ? {
-                  name: "",
-                  userId: payload.receiverId,
-                }
-              : { name: "", userId: 0 },
+            receiver:
+              payload.receiverId !== undefined
+                ? {
+                    name: "",
+                    userId: payload.receiverId,
+                  }
+                : { name: "", userId: 0 },
             timestamp: payload.timestamp,
           };
           if (length > 0) {
@@ -98,15 +99,11 @@ const CommandContainer = () => {
   }, [zmClient, onCommandMessage]);
 
   useParticipantsChange(zmClient, () => {
-    if (zmClient) {
-      setCommandReceivers([oneToAllUser, ...zmClient.getAllUser().filter((item) => item.userId !== currentUserId)]);
-    }
+    setCommandReceivers([oneToAllUser, ...zmClient.getAllUser().filter((item) => item.userId !== currentUserId)]);
   });
 
   useEffect(() => {
-    if (zmClient) {
-      setCommandReceivers([oneToAllUser, ...zmClient.getAllUser().filter((item) => item.userId !== currentUserId)]);
-    }
+    setCommandReceivers([oneToAllUser, ...zmClient.getAllUser().filter((item) => item.userId !== currentUserId)]);
   }, [currentUserId, zmClient]);
 
   useEffect(() => {
@@ -124,7 +121,7 @@ const CommandContainer = () => {
   const setCommandUserId = useCallback(
     (userId) => {
       const user = commandReceivers.find((u) => u.userId === userId);
-      if (user !== null) {
+      if (user !== undefined) {
         setCommandUser(user);
       }
     },
@@ -133,11 +130,8 @@ const CommandContainer = () => {
   const sendMessage = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       event.preventDefault();
-      if (command !== null && commandDraft) {
-        if (command.userId) cmdClient?.send(commandDraft, command.userId);
-        else {
-          cmdClient?.send(commandDraft);
-        }
+      if (command !== null) {
+        cmdClient?.send(commandDraft, command.userId);
         setCommandDraft("");
       }
     },

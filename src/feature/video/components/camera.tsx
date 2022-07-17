@@ -4,8 +4,10 @@ import { CheckOutlined, UpOutlined, VideoCameraAddOutlined, VideoCameraOutlined 
 import { Button, Dropdown, Menu, Tooltip } from "antd";
 import classNames from "classnames";
 
-import "./camera.scss";
 import { MediaDevice } from "../video-types.d";
+
+import "./camera.scss";
+
 interface CameraButtonProps {
   isStartedVideo: boolean;
   isMirrored?: boolean;
@@ -38,7 +40,7 @@ const CameraButton = (props: CameraButtonProps) => {
       onSwitchCamera(payload.key);
     }
   };
-  const menu = cameraList !== null && cameraList.length > 0 && (
+  const menu = cameraList !== undefined && cameraList.length > 0 && (
     <Menu onClick={onMenuItemClick} theme="dark" className="camera-menu">
       <Menu.ItemGroup title="Select a Camera">
         {cameraList.map((item) => (
@@ -48,7 +50,7 @@ const CameraButton = (props: CameraButtonProps) => {
         ))}
       </Menu.ItemGroup>
       <Menu.Divider />
-      <Menu.Item key="mirror" icon={isMirrored && <CheckOutlined />}>
+      <Menu.Item key="mirror" icon={isMirrored === true && <CheckOutlined />}>
         Mirror My Video
       </Menu.Item>
       <Menu.Divider />
@@ -57,7 +59,7 @@ const CameraButton = (props: CameraButtonProps) => {
   );
   return (
     <div className={classNames("camera-footer", className)}>
-      {isStartedVideo && menu ? (
+      {isStartedVideo && menu !== false ? (
         <Dropdown.Button
           className={"camera-dropdown-button"}
           size="large"

@@ -35,7 +35,14 @@
       "error"
     ],
     "no-console": [
-      "warn"
+      "warn",
+      {
+        "allow": [
+          "info",
+          "warn",
+          "error"
+        ]
+      }
     ],
     "@typescript-eslint/no-unused-vars": [
       "warn",
