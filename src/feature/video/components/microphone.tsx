@@ -1,16 +1,13 @@
-/* eslint-disable no-nested-ternary */
-import React, { useState, useEffect } from "react";
-import { Menu, Tooltip, Dropdown, Button, Modal, Select, Input } from "antd";
+import React, { useEffect, useState } from "react";
+
+import { AudioMutedOutlined, AudioOutlined, CheckOutlined, UpOutlined } from "@ant-design/icons";
+import { Button, Dropdown, Menu, Tooltip } from "antd";
 import classNames from "classnames";
-import {
-  AudioOutlined,
-  AudioMutedOutlined,
-  CheckOutlined,
-  UpOutlined,
-} from "@ant-design/icons";
+
 import { IconFont } from "../../../component/icon-font";
 import "./microphone.scss";
-import { MediaDevice } from "../video-types";
+import { MediaDevice } from "../video-types.d";
+
 import CallOutModel from "./call-out-model";
 const { Button: DropdownButton } = Dropdown;
 interface MicrophoneButtonProps {
@@ -22,8 +19,8 @@ interface MicrophoneButtonProps {
   phoneCountryList?: any[];
   onMicrophoneClick: () => void;
   onMicrophoneMenuClick: (key: string) => void;
-  onPhoneCallClick?: (code: string, phoneNumber: string,name:string,option:any) => void;
-  onPhoneCallCancel?: (code: string, phoneNumber: string,option:any) => Promise<any>;
+  onPhoneCallClick?: (code: string, phoneNumber: string, name: string, option: any) => void;
+  onPhoneCallCancel?: (code: string, phoneNumber: string, option: any) => Promise<any>;
   className?: string;
   microphoneList?: MediaDevice[];
   speakerList?: MediaDevice[];
@@ -50,13 +47,9 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
     onPhoneCallCancel,
   } = props;
   const [isPhoneModelOpen, setIsPhoneModelOpen] = useState(false);
-  const tooltipText = isStartedAudio
-    ? isMuted
-      ? "unmute"
-      : "mute"
-    : "start audio";
+  const tooltipText = isStartedAudio ? (isMuted ? "unmute" : "mute") : "start audio";
   const menu = [];
-  if (microphoneList && microphoneList.length && audio !== "phone") {
+  if (microphoneList !== undefined && microphoneList.length > 0 && audio !== "phone") {
     menu.push({
       group: "microphone",
       title: "Select a Microphone",
@@ -67,7 +60,7 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
       })),
     });
   }
-  if (speakerList && speakerList.length && audio !== "phone") {
+  if (speakerList !== undefined && speakerList.length > 0 && audio !== "phone") {
     menu.push({
       group: "speaker",
       title: "Select a speaker",
@@ -78,14 +71,14 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
       })),
     });
   }
-  if (audio !== 'phone') {
+  if (audio !== "phone") {
     menu.push({
       items: [
         {
-          label: 'Audio Statistic',
-          value: 'statistic'
-        }
-      ]
+          label: "Audio Statistic",
+          value: "statistic",
+        },
+      ],
     });
   }
 
@@ -113,12 +106,9 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
   const overlayMenu = (
     <Menu onClick={onMenuItemClick} theme="dark" className="microphone-menu">
       {menu.map((e) => {
-        if (e.group) {
+        if (e.group !== undefined) {
           const mItem = e.items.map((m) => (
-            <Menu.Item
-              key={`${e.group}|${m.value}`}
-              icon={m.checked && <CheckOutlined />}
-            >
+            <Menu.Item key={`${e.group}|${m.value}`} icon={m.checked && <CheckOutlined />}>
               {m.label}
             </Menu.Item>
           ));
@@ -131,9 +121,9 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
             </React.Fragment>
           );
         }
-        return (e.items as Array<{ value: string; label: string }>).map(
-          (m: any) => <Menu.Item key={m?.value}>{m?.label}</Menu.Item>
-        );
+        return (e.items as Array<{ value: string; label: string }>).map((m: any) => (
+          <Menu.Item key={m?.value}>{m?.label}</Menu.Item>
+        ));
       })}
     </Menu>
   );
@@ -169,7 +159,7 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
         </DropdownButton>
       ) : (
         <Tooltip title={tooltipText}>
-          {isSupportPhone ? (
+          {isSupportPhone === true ? (
             <DropdownButton
               className={"microphone-dropdown-button"}
               size="large"

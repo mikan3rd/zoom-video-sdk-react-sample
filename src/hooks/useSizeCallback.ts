@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect } from "react";
 interface ResizeObserverEntry {
   target: Element;
 }
@@ -15,7 +15,7 @@ export function useSizeCallback(
   callback: (payload: { width: number; height: number }) => void,
 ) {
   useLayoutEffect(() => {
-    if (!target) {
+    if (target === null) {
       return () => {
         //
       };

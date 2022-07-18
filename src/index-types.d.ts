@@ -1,11 +1,11 @@
 import {
-  VideoClient,
-  Stream,
+  CommandChannel,
   Participant,
   ChatClient as SDKChatClient,
   RecordingClient as SDKRecordingClient,
-  CommandChannel,
-} from '@zoom/videosdk';
+  Stream,
+  VideoClient,
+} from "@zoom/videosdk";
 
 export type ZoomClient = typeof VideoClient;
 export type MediaStream = typeof Stream;

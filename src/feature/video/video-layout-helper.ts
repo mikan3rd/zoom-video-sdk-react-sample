@@ -1,5 +1,7 @@
-import { CellLayout, Position } from "./video-types";
 import { VideoQuality } from "@zoom/videosdk";
+
+import { CellLayout } from "./video-types.d";
+
 interface Grid {
   row: number;
   column: number;
@@ -13,7 +15,7 @@ interface Layout {
 }
 const layoutCandidates: { [key: number]: Grid[] } = Array.from({ length: 9 })
   .map((value, index) => {
-    const count = index + 1;
+    const count: number = index + 1;
     const mid = Math.ceil(count / 2);
     const candidates = Array.from({ length: mid })
       .map((v, i) => {
@@ -60,11 +62,7 @@ export function maxViewportVideoCounts(width: number, height: number) {
   return maxRows * maxColumns;
 }
 
-export function getVideoLayout(
-  rootWidth: number,
-  rootHeight: number,
-  count: number
-): CellLayout[] {
+export function getVideoLayout(rootWidth: number, rootHeight: number, count: number): CellLayout[] {
   /**
    * [1,count]
    */
@@ -75,15 +73,16 @@ export function getVideoLayout(
   maxRows = Math.min(maxRows, count);
   maxColumns = Math.min(maxColumns, count);
   const actualCount = Math.min(count, maxRows * maxColumns);
-  const layoutOfCount = layoutCandidates[actualCount].filter(
-    (item) => item.row <= maxRows && item.column <= maxColumns
+  const layoutOfCount = layoutCandidates[actualCount]?.filter(
+    (item) => item.row <= maxRows && item.column <= maxColumns,
   );
+  if (layoutOfCount === undefined) {
+    return [];
+  }
   const preferredLayout: Layout = layoutOfCount
     .map((item) => {
       const { column, row } = item;
-      const canonical = Math.floor(
-        Math.min(rootWidth / (16 * column), rootHeight / (9 * row))
-      );
+      const canonical = Math.floor(Math.min(rootWidth / (16 * column), rootHeight / (9 * row)));
       const cellWidth = canonical * 16 - cellOffset * 2;
       const cellHeight = canonical * 9 - cellOffset * 2;
       return {
@@ -101,7 +100,7 @@ export function getVideoLayout(
         }
         return prev;
       },
-      { cellArea: 0, cellHeight: 0, cellWidth: 0, column: 0, row: 0 }
+      { cellArea: 0, cellHeight: 0, cellWidth: 0, column: 0, row: 0 },
     );
   const { cellWidth, cellHeight, column, row } = preferredLayout;
   const cellBoxWidth = cellWidth + cellOffset * 2;
@@ -112,7 +111,7 @@ export function getVideoLayout(
   const lastRowColumns = column - ((column * row) % actualCount);
   const lastRowMargin = (rootWidth - cellBoxWidth * lastRowColumns) / 2 + cellOffset;
   let quality = VideoQuality.Video_90P;
-  
+
   if (actualCount <= 4 && cellBoxHeight >= 510) {
     // GROUP HD
     quality = VideoQuality.Video_720P;

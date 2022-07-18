@@ -1,10 +1,11 @@
-import { useState, useCallback, useEffect, MutableRefObject } from 'react';
-import { useMount, usePrevious, useUnmount } from '../../../hooks';
-import { ZoomClient, MediaStream } from '../../../index-types';
+import { MutableRefObject, useCallback, useEffect, useState } from "react";
+
+import { useMount, usePrevious, useUnmount } from "../../../hooks";
+import { MediaStream, ZoomClient } from "../../../index-types.d";
 export function useShare(
   zmClient: ZoomClient,
   mediaStream: MediaStream | null,
-  shareRef: MutableRefObject<HTMLCanvasElement | HTMLVideoElement| null>,
+  shareRef: MutableRefObject<HTMLCanvasElement | HTMLVideoElement | null>,
 ) {
   const [isRecieveSharing, setIsReceiveSharing] = useState(false);
   const [isStartedShare, setIsStartedShare] = useState(false);
@@ -18,7 +19,7 @@ export function useShare(
     ({ state, userId }) => {
       if (!isStartedShare) {
         setActiveSharingId(userId);
-        setIsReceiveSharing(state === 'Active');
+        setIsReceiveSharing(state === "Active");
       }
     },
     [isStartedShare],
@@ -42,38 +43,27 @@ export function useShare(
     [currentUserId],
   );
   useEffect(() => {
-    zmClient.on('active-share-change', onActiveShareChange);
-    zmClient.on('share-content-dimension-change', onSharedContentDimensionChange);
-    zmClient.on('user-updated', onCurrentUserUpdate);
+    zmClient.on("active-share-change", onActiveShareChange);
+    zmClient.on("share-content-dimension-change", onSharedContentDimensionChange);
+    zmClient.on("user-updated", onCurrentUserUpdate);
     return () => {
-      zmClient.off('active-share-change', onActiveShareChange);
-      zmClient.off('share-content-dimension-change', onSharedContentDimensionChange);
-      zmClient.off('user-updated', onCurrentUserUpdate);
+      zmClient.off("active-share-change", onActiveShareChange);
+      zmClient.off("share-content-dimension-change", onSharedContentDimensionChange);
+      zmClient.off("user-updated", onCurrentUserUpdate);
     };
-  }, [
-    zmClient,
-    onActiveShareChange,
-    onSharedContentDimensionChange,
-    onCurrentUserUpdate,
-  ]);
+  }, [zmClient, onActiveShareChange, onSharedContentDimensionChange, onCurrentUserUpdate]);
   const previousIsRecieveSharing = usePrevious(isRecieveSharing);
   useEffect(() => {
-    if (shareRef.current && previousIsRecieveSharing !== isRecieveSharing) {
+    if (shareRef.current !== null && previousIsRecieveSharing !== isRecieveSharing) {
       if (isRecieveSharing) {
         mediaStream?.startShareView(shareRef.current as HTMLCanvasElement, activeSharingId);
-      } else if (previousIsRecieveSharing === true && isRecieveSharing === false) {
+      } else if (previousIsRecieveSharing === true) {
         mediaStream?.stopShareView();
       }
     }
-  }, [
-    mediaStream,
-    shareRef,
-    previousIsRecieveSharing,
-    isRecieveSharing,
-    activeSharingId,
-  ]);
+  }, [mediaStream, shareRef, previousIsRecieveSharing, isRecieveSharing, activeSharingId]);
   useEffect(() => {
-    if (mediaStream) {
+    if (mediaStream !== null) {
       const activeSharedUserId = mediaStream.getActiveShareUserId();
       if (activeSharedUserId) {
         setIsReceiveSharing(true);
@@ -83,9 +73,7 @@ export function useShare(
   }, [mediaStream]);
   useMount(() => {
     const currentUser = zmClient.getCurrentUserInfo();
-    if (currentUser) {
-      setCurrentUserId(currentUser.userId);
-    }
+    setCurrentUserId(currentUser.userId);
   });
   useUnmount(() => {
     if (isRecieveSharing) {

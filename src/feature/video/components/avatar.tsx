@@ -1,8 +1,8 @@
-import React from 'react';
-import { AudioMutedOutlined } from '@ant-design/icons';
-import classNames from 'classnames';
-import './avatar.scss';
-import { Participant } from '../../../index-types';
+import { AudioMutedOutlined } from "@ant-design/icons";
+import classNames from "classnames";
+
+import "./avatar.scss";
+import { Participant } from "../../../index-types.d";
 interface AvatarProps {
   participant: Participant;
   style?: { [key: string]: string };
@@ -14,14 +14,12 @@ const Avatar = (props: AvatarProps) => {
   const { displayName, audio, muted, bVideoOn } = participant;
   return (
     <div
-      className={classNames('avatar', { 'avatar-active': isActive }, className)}
-      style={{ ...style, background: bVideoOn ? 'transparent' : 'rgb(26,26,26)' }}
+      className={classNames("avatar", { "avatar-active": isActive }, className)}
+      style={{ ...style, background: bVideoOn ? "transparent" : "rgb(26,26,26)" }}
     >
-      {(bVideoOn || (audio === 'computer' && muted)) && (
+      {(bVideoOn || (audio === "computer" && muted)) && (
         <div className="corner-name">
-          {audio === 'computer' && muted && (
-            <AudioMutedOutlined style={{ color: '#f00' }} />
-          )}
+          {audio === "computer" && muted && <AudioMutedOutlined style={{ color: "#f00" }} />}
           {bVideoOn && <span>{displayName}</span>}
         </div>
       )}

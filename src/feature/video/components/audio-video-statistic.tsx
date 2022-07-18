@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback, useContext, useRef } from 'react';
-import { Modal, Table, Tabs } from 'antd';
-import { AudioQosData, VideoQosData } from '@zoom/videosdk';
-import ZoomContext from '../../../context/zoom-context';
-import MediaContext from '../../../context/media-context';
-import { useMount, useUnmount } from '../../../hooks';
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+
+import { AudioQosData, VideoQosData } from "@zoom/videosdk";
+import { Modal, Table, Tabs } from "antd";
+
+import MediaContext from "../../../context/media-context";
+import ZoomContext from "../../../context/zoom-context";
+import { useMount, useUnmount } from "../../../hooks";
 interface AudioVideoStatisticModelProps {
   visible: boolean;
   defaultTab?: string;
@@ -13,80 +15,80 @@ interface AudioVideoStatisticModelProps {
   setVisible: (visible: boolean) => void;
 }
 const { TabPane } = Tabs;
-const mult = '\u00D7';
+const mult = "\u00D7";
 const AudioMetrics = [
   {
-    title: 'Frequency',
-    value: 'sample_rate',
-    format: (value: number) => `${value} khz`
+    title: "Frequency",
+    value: "sample_rate",
+    format: (value: number) => `${value} khz`,
   },
   {
-    title: 'Latency',
-    value: 'rtt',
-    format: (value: number) => `${value} ms`
+    title: "Latency",
+    value: "rtt",
+    format: (value: number) => `${value} ms`,
   },
   {
-    title: 'Jitter',
-    value: 'jitter',
-    format: (value: number) => `${value} ms`
+    title: "Jitter",
+    value: "jitter",
+    format: (value: number) => `${value} ms`,
   },
   {
-    title: 'Packet Loss - Avg(Max)',
-    value: ['avg_loss', 'max_loss'],
+    title: "Packet Loss - Avg(Max)",
+    value: ["avg_loss", "max_loss"],
     format: (value: number[]) => {
       const nv = value.map((s) => {
         return `${((Number(s) / 1000) * 100).toFixed(1)}%`;
       });
       const [avg, max] = nv;
       return `${avg} (${max})`;
-    }
-  }
+    },
+  },
 ];
 const VideoMetrics = [
   {
-    title: 'Latency',
-    value: 'rtt',
-    format: (value: number) => `${value} ms`
+    title: "Latency",
+    value: "rtt",
+    format: (value: number) => `${value} ms`,
   },
   {
-    title: 'Jitter',
-    value: 'jitter',
-    format: (value: number) => `${value} ms`
+    title: "Jitter",
+    value: "jitter",
+    format: (value: number) => `${value} ms`,
   },
   {
-    title: 'Packet Loss - Avg(Max)',
-    value: ['avg_loss', 'max_loss'],
+    title: "Packet Loss - Avg(Max)",
+    value: ["avg_loss", "max_loss"],
     format: (value: number[]) => {
       const nv = value.map((s) => {
         return `${((Number(s) / 1000) * 100).toFixed(1)}%`;
       });
       const [avg, max] = nv;
       return `${avg} (${max})`;
-    }
+    },
   },
   {
-    title: 'Resolution',
-    value: ['width', 'height'],
+    title: "Resolution",
+    value: ["width", "height"],
     format: (value: number[]) => {
       const [w, h] = value;
       if (w === 0 && h === 0) {
-        return '-';
+        return "-";
       }
       return `${w}${mult}${h}`;
-    }
+    },
   },
   {
-    title: 'Frame Per Second	',
-    value: 'fps',
-    format: (value: number) => `${value} fps`
-  }
+    title: "Frame Per Second	",
+    value: "fps",
+    format: (value: number) => `${value} fps`,
+  },
 ];
 const AudioQosDataShape = {
   avg_loss: 0,
   jitter: 0,
   max_loss: 0,
   rtt: 0,
-  sample_rate: 0
+  sample_rate: 0,
 };
 
 const VideoQosDataShape = {
@@ -97,64 +99,64 @@ const VideoQosDataShape = {
   max_loss: 0,
   rtt: 0,
   width: 0,
-  sample_rate: 0
+  sample_rate: 0,
 };
 const getDataSouce = (
   streamMertics: typeof AudioMetrics | typeof VideoMetrics,
   encodingData: AudioQosData | VideoQosData | undefined,
-  decodingData: AudioQosData | VideoQosData | undefined
+  decodingData: AudioQosData | VideoQosData | undefined,
 ) => {
   return streamMertics.map((metrics, index) => {
-    let send = '';
-    let receive = '';
-    if (encodingData) {
+    let send = "";
+    let receive = "";
+    if (encodingData !== undefined) {
       let value;
       if (Array.isArray(metrics.value)) {
         value = metrics.value.map((m: string) => (encodingData as { [key: string]: any })[m]);
       } else {
         value = (encodingData as { [key: string]: any })[metrics.value];
       }
-      send = value === 0 ? '-' : metrics.format(value);
+      send = value === 0 ? "-" : metrics.format(value);
     }
-    if (decodingData) {
+    if (decodingData !== undefined) {
       let value;
       if (Array.isArray(metrics.value)) {
         value = metrics.value.map((m: string) => (decodingData as { [key: string]: any })[m]);
       } else {
         value = (decodingData as { [key: string]: any })[metrics.value];
       }
-      receive = value === 0 ? '-' : metrics.format(value);
+      receive = value === 0 ? "-" : metrics.format(value);
     }
     return {
       name: metrics.title,
       send,
       receive,
-      key: index
+      key: index,
     };
   });
 };
 const columns = [
   {
-    title: 'Item Name',
-    dataIndex: 'name',
-    key: 'name'
+    title: "Item Name",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    title: 'Send',
-    dataIndex: 'send',
-    key: 'send'
+    title: "Send",
+    dataIndex: "send",
+    key: "send",
   },
   {
-    title: 'Receive',
-    dataIndex: 'receive',
-    key: 'receive'
-  }
+    title: "Receive",
+    dataIndex: "receive",
+    key: "receive",
+  },
 ];
 const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
   const { visible, defaultTab, isStartedAudio, isStartedVideo, isMuted, setVisible } = props;
   const zmclient = useContext(ZoomContext);
   const { mediaStream } = useContext(MediaContext);
-  const [tab, setTab] = useState(defaultTab || 'audio');
+  const [tab, setTab] = useState(defaultTab ?? "audio");
   const [audioEncodingStatistic, setAudioEncodingStatistic] = useState<AudioQosData>();
   const [audioDecodingStatistic, setAudioDecodingStatistic] = useState<AudioQosData>();
   const [videoEncodingStatistic, setVideoEncodingStatistic] = useState<VideoQosData>();
@@ -165,14 +167,14 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
     setTab(key);
   };
   const clearAudioTimer = () => {
-    if (audioDecodeTimerRef.current) {
+    if (audioDecodeTimerRef.current === 0) {
       clearTimeout(audioDecodeTimerRef.current);
       audioDecodeTimerRef.current = 0;
     }
   };
 
   const clearVideoTimer = () => {
-    if (videoDecodeTimerRef.current) {
+    if (videoDecodeTimerRef.current === 0) {
       clearTimeout(videoDecodeTimerRef.current);
       videoDecodeTimerRef.current = 0;
     }
@@ -180,7 +182,7 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
 
   const onAudioStatisticChange = useCallback((payload) => {
     const {
-      data: { encoding, ...restProps }
+      data: { encoding, ...restProps },
     } = payload;
     if (encoding) {
       setAudioEncodingStatistic({ ...restProps });
@@ -195,7 +197,7 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
   }, []);
   const onVideoStatisticChange = useCallback((payload) => {
     const {
-      data: { encoding, ...restProps }
+      data: { encoding, ...restProps },
     } = payload;
     if (encoding) {
       setVideoEncodingStatistic({ ...restProps });
@@ -211,11 +213,11 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
   const audioDataSource = getDataSouce(AudioMetrics, audioEncodingStatistic, audioDecodingStatistic);
   const videoDataSource = getDataSouce(VideoMetrics, videoEncodingStatistic, videoDecodingStatistic);
   useEffect(() => {
-    zmclient.on('audio-statistic-data-change', onAudioStatisticChange);
-    zmclient.on('video-statistic-data-change', onVideoStatisticChange);
+    zmclient.on("audio-statistic-data-change", onAudioStatisticChange);
+    zmclient.on("video-statistic-data-change", onVideoStatisticChange);
     return () => {
-      zmclient.off('audio-statistic-data-change', onAudioStatisticChange);
-      zmclient.off('video-statistic-data-change', onVideoStatisticChange);
+      zmclient.off("audio-statistic-data-change", onAudioStatisticChange);
+      zmclient.off("video-statistic-data-change", onVideoStatisticChange);
     };
   }, [zmclient, onAudioStatisticChange, onVideoStatisticChange]);
   useEffect(() => {
@@ -234,7 +236,7 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
     }
   }, [defaultTab]);
   useMount(() => {
-    if (mediaStream) {
+    if (mediaStream !== null) {
       const { encode: audioEncoding, decode: audioDecoding } = mediaStream.getAudioStatisticData();
       const { encode: videoEncoding, decode: videoDecoding } = mediaStream.getVideoStatisticData();
       setAudioDecodingStatistic(audioDecoding);

@@ -1,9 +1,9 @@
-import React from 'react';
-import { Button, Tooltip } from 'antd';
-import classNames from 'classnames';
-import { IconFont } from '../../../component/icon-font';
-import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import './screen-share.scss';
+import { LockOutlined, UnlockOutlined } from "@ant-design/icons";
+import { Button, Tooltip } from "antd";
+import classNames from "classnames";
+
+import { IconFont } from "../../../component/icon-font";
+import "./screen-share.scss";
 interface ScreenShareButtonProps {
   isStartedScreenShare: boolean;
   onScreenShareClick: () => void;
@@ -17,12 +17,10 @@ interface ScreenShareLockButtonProps {
 const ScreenShareButton = (props: ScreenShareButtonProps) => {
   const { isStartedScreenShare, onScreenShareClick } = props;
   return (
-    <Tooltip
-      title={isStartedScreenShare ? 'stop screen share' : 'start screen share'}
-    >
+    <Tooltip title={isStartedScreenShare ? "stop screen share" : "start screen share"}>
       <Button
-        className={classNames('screen-share-button', {
-          'started-share': isStartedScreenShare,
+        className={classNames("screen-share-button", {
+          "started-share": isStartedScreenShare,
         })}
         icon={<IconFont type="icon-share" />}
         // eslint-disable-next-line react/jsx-boolean-value
@@ -38,9 +36,7 @@ const ScreenShareButton = (props: ScreenShareButtonProps) => {
 const ScreenShareLockButton = (props: ScreenShareLockButtonProps) => {
   const { isLockedScreenShare, onScreenShareLockClick } = props;
   return (
-    <Tooltip
-      title={isLockedScreenShare ? 'unlock screen share' : ' lock screen share'}
-    >
+    <Tooltip title={isLockedScreenShare ? "unlock screen share" : " lock screen share"}>
       <Button
         className={"screen-share-button"}
         icon={isLockedScreenShare ? <LockOutlined /> : <UnlockOutlined />}
@@ -54,4 +50,4 @@ const ScreenShareLockButton = (props: ScreenShareLockButtonProps) => {
   );
 };
 
-export { ScreenShareButton, ScreenShareLockButton};
+export { ScreenShareButton, ScreenShareLockButton };

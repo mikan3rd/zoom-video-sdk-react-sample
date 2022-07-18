@@ -1,52 +1,46 @@
-import React, {
-  useEffect,
-  useContext,
-  useState,
-  useCallback,
-  useReducer,
-  useMemo
-} from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { useCallback, useContext, useEffect, useMemo, useReducer, useState } from "react";
+
 import ZoomVideo, { ConnectionState } from "@zoom/videosdk";
-import { message, Modal } from "antd";
-import "antd/dist/antd.css";
-import produce from "immer";
-import Home from "./feature/home/home";
-import Video from "./feature/video/video";
-import VideoSingle from "./feature/video/video-single";
-import VideoNonSAB from "./feature/video/video-non-sab";
-import Preview from "./feature/preview/preview";
-import ZoomContext from "./context/zoom-context";
-import ZoomMediaContext from "./context/media-context";
+import { Modal, message } from "antd";
+import { produce } from "immer";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+
+import LoadingLayer from "./component/loading-layer";
 import ChatContext from "./context/chat-context";
 import CommandContext from "./context/cmd-context";
+import ZoomMediaContext from "./context/media-context";
 import RecordingContext from "./context/recording-context";
-import LoadingLayer from "./component/loading-layer";
+import ZoomContext from "./context/zoom-context";
 import Chat from "./feature/chat/chat";
 import Command from "./feature/command/command";
-import { ChatClient, CommandChannelClient, MediaStream, RecordingClient } from "./index-types";
-import "./App.css";
+import Home from "./feature/home/home";
+import Preview from "./feature/preview/preview";
+import Video from "./feature/video/video";
+import VideoNonSAB from "./feature/video/video-non-sab";
+import VideoSingle from "./feature/video/video-single";
+import { ChatClient, CommandChannelClient, MediaStream, RecordingClient } from "./index-types.d";
 import { isAndroidBrowser } from "./utils/platform";
+
+import "antd/dist/antd.css";
+import "./App.css";
 
 declare global {
   interface Window {
     webEndpoint: string | undefined;
     zmClient: any | undefined;
     mediaStream: any | undefined;
-    crossOriginIsolated:boolean
+    crossOriginIsolated: boolean;
   }
 }
 
-interface AppProps {
-  meetingArgs: {
-    sdkKey: string;
-    topic: string;
-    signature: string;
-    name: string;
-    password?: string;
-    enforceGalleryView?: string;
-  };
-}
+export type AppProps = {
+  topic: string;
+  signature: string;
+  name: string;
+  password?: string;
+  enforceGalleryView?: boolean;
+};
+
 const mediaShape = {
   audio: {
     encode: false,
@@ -87,8 +81,8 @@ const mediaReducer = produce((draft, action) => {
       draft.share.decode = action.payload;
       break;
     }
-    case "reset-media":{
-     Object.assign(draft,{...mediaShape});
+    case "reset-media": {
+      Object.assign(draft, { ...mediaShape });
       break;
     }
 
@@ -98,9 +92,7 @@ const mediaReducer = produce((draft, action) => {
 }, mediaShape);
 
 function App(props: AppProps) {
-  const {
-    meetingArgs: { sdkKey, topic, signature, name, password, enforceGalleryView }
-  } = props;
+  const { topic, signature, name, password, enforceGalleryView } = props;
   const [loading, setIsLoading] = useState(true);
   const [loadingText, setLoadingText] = useState("");
   const [isFailover, setIsFailover] = useState<boolean>(false);
@@ -110,23 +102,18 @@ function App(props: AppProps) {
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);
   const [recordingClient, setRecordingClient] = useState<RecordingClient | null>(null);
   const [commandClient, setCommandClient] = useState<CommandChannelClient | null>(null);
-  const [isSupportGalleryView, setIsSupportGalleryView] = useState<boolean>(
-    true
-  );
+  const [isSupportGalleryView, setIsSupportGalleryView] = useState<boolean>(true);
   const zmClient = useContext(ZoomContext);
-  const webEndpoint = 'zoom.us';
+  const webEndpoint = "zoom.us";
   const mediaContext = useMemo(() => ({ ...mediaState, mediaStream }), [mediaState, mediaStream]);
-  const galleryViewWithoutSAB = !!enforceGalleryView && !window.crossOriginIsolated;
+  const galleryViewWithoutSAB = enforceGalleryView === true && !window.crossOriginIsolated;
+
   useEffect(() => {
     const init = async () => {
-      await zmClient.init(
-        "en-US",
-        `${window.location.origin}/lib`,
-        {
-          webEndpoint,
-          enforceMultipleVideos:galleryViewWithoutSAB
-        }
-      );
+      await zmClient.init("en-US", `${window.location.origin}/lib`, {
+        webEndpoint,
+        enforceMultipleVideos: galleryViewWithoutSAB,
+      });
       try {
         setLoadingText("Joining the session...");
         await zmClient.join(topic, signature, name, password);
@@ -141,7 +128,7 @@ function App(props: AppProps) {
         setRecordingClient(recordingClient);
         setIsLoading(false);
       } catch (e: any) {
-        console.log('Error joining meeting', e);
+        console.info("Error joining meeting", e);
         setIsLoading(false);
         message.error(e.reason);
       }
@@ -150,7 +137,7 @@ function App(props: AppProps) {
     return () => {
       ZoomVideo.destroyClient();
     };
-  }, [sdkKey, signature, zmClient, topic, name, password, webEndpoint, galleryViewWithoutSAB]);
+  }, [signature, zmClient, topic, name, password, webEndpoint, galleryViewWithoutSAB]);
   const onConnectionChange = useCallback(
     (payload) => {
       if (payload.state === ConnectionState.Reconnecting) {
@@ -168,7 +155,7 @@ function App(props: AppProps) {
         }
       } else if (payload.state === ConnectionState.Closed) {
         setStatus("closed");
-        dispatch({type:'reset-media'});
+        dispatch({ type: "reset-media" });
         if (payload.reason === "ended by host") {
           Modal.warning({
             title: "Meeting ended",
@@ -177,7 +164,7 @@ function App(props: AppProps) {
         }
       }
     },
-    [isFailover]
+    [isFailover],
   );
   const onMediaSDKChange = useCallback((payload) => {
     const { action, type, result } = payload;
@@ -185,11 +172,11 @@ function App(props: AppProps) {
   }, []);
 
   const onDialoutChange = useCallback((payload) => {
-    console.log('onDialoutChange', payload);
+    console.info("onDialoutChange", payload);
   }, []);
 
   const onAudioMerged = useCallback((payload) => {
-    console.log('onAudioMerged', payload);
+    console.info("onAudioMerged", payload);
   }, []);
 
   const onLeaveOrJoinSession = useCallback(async () => {
@@ -220,39 +207,34 @@ function App(props: AppProps) {
       {!loading && (
         <ZoomMediaContext.Provider value={mediaContext}>
           <ChatContext.Provider value={chatClient}>
-          <RecordingContext.Provider value={recordingClient}>
-            <CommandContext.Provider value={commandClient} >
-            <Router>
-              <Switch>
-                <Route
-                  path="/"
-                  render={(props) => (
-                    <Home
-                      {...props}
-                      status={status}
-                      onLeaveOrJoinSession={onLeaveOrJoinSession}
+            <RecordingContext.Provider value={recordingClient}>
+              <CommandContext.Provider value={commandClient}>
+                <Router>
+                  <Switch>
+                    <Route
+                      path="/"
+                      render={(props) => (
+                        <Home {...props} status={status} onLeaveOrJoinSession={onLeaveOrJoinSession} />
+                      )}
+                      exact
                     />
-                  )}
-                  exact
-                />
-                <Route
-                  path="/index.html"
-                  render={(props) => (
-                    <Home
-                      {...props}
-                      status={status}
-                      onLeaveOrJoinSession={onLeaveOrJoinSession}
+                    <Route
+                      path="/index.html"
+                      render={(props) => (
+                        <Home {...props} status={status} onLeaveOrJoinSession={onLeaveOrJoinSession} />
+                      )}
+                      exact
                     />
-                  )}
-                  exact
-                />
-                <Route path="/preview" component={Preview} />
-                <Route path="/video" component={isSupportGalleryView ? Video : galleryViewWithoutSAB ? VideoNonSAB : VideoSingle} />
-                <Route path="/chat" component={Chat} />
-                <Route path="/command" component={Command} />
-              </Switch>
-            </Router>
-            </CommandContext.Provider>
+                    <Route path="/preview" component={Preview} />
+                    <Route
+                      path="/video"
+                      component={isSupportGalleryView ? Video : galleryViewWithoutSAB ? VideoNonSAB : VideoSingle}
+                    />
+                    <Route path="/chat" component={Chat} />
+                    <Route path="/command" component={Command} />
+                  </Switch>
+                </Router>
+              </CommandContext.Provider>
             </RecordingContext.Provider>
           </ChatContext.Provider>
         </ZoomMediaContext.Provider>

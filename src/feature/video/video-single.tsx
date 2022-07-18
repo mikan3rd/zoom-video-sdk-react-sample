@@ -1,35 +1,27 @@
-import React, {
-  useContext,
-  useRef,
-  useState,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { VideoQuality } from '@zoom/videosdk';
-import classnames from 'classnames';
-import _ from "lodash";
-import ZoomContext from '../../context/zoom-context';
-import ZoomMediaContext from '../../context/media-context';
-import Avatar from './components/avatar';
-import VideoFooter from './components/video-footer';
-import { useShare } from './hooks/useShare';
-import { useParticipantsChange } from './hooks/useParticipantsChange';
-import { useCanvasDimension } from './hooks/useCanvasDimension';
-import { useMount, useSizeCallback } from '../../hooks';
-import { Participant } from '../../index-types';
-import './video.scss';
-import {
-  isAndroidBrowser,
-  isSupportOffscreenCanvas,
-  isSupportWebCodecs,
-} from '../../utils/platform';
-import { SELF_VIDEO_ID } from './video-constants';
-import { isShallowEqual } from '../../utils/util';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-const isUseVideoElementToDrawSelfVideo =
-  isAndroidBrowser() || isSupportOffscreenCanvas();
+import { VideoQuality } from "@zoom/videosdk";
+import classnames from "classnames";
+import _ from "lodash";
+import { RouteComponentProps } from "react-router-dom";
+
+import ZoomMediaContext from "../../context/media-context";
+import ZoomContext from "../../context/zoom-context";
+import { useMount, useSizeCallback } from "../../hooks";
+import { Participant } from "../../index-types.d";
+import { isAndroidBrowser, isSupportOffscreenCanvas, isSupportWebCodecs } from "../../utils/platform";
+import { isShallowEqual } from "../../utils/util";
+
+import Avatar from "./components/avatar";
+import VideoFooter from "./components/video-footer";
+import { useCanvasDimension } from "./hooks/useCanvasDimension";
+import { useParticipantsChange } from "./hooks/useParticipantsChange";
+import { useShare } from "./hooks/useShare";
+import { SELF_VIDEO_ID } from "./video-constants";
+
+import "./video.scss";
+
+const isUseVideoElementToDrawSelfVideo = isAndroidBrowser() || isSupportOffscreenCanvas();
 
 const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => {
   const zmClient = useContext(ZoomContext);
@@ -45,11 +37,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
   const [activeVideo, setActiveVideo] = useState<number>(0);
   const previousActiveUser = useRef<Participant>();
   const canvasDimension = useCanvasDimension(mediaStream, videoRef);
-  const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(
-    zmClient,
-    mediaStream,
-    shareRef,
-  );
+  const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(zmClient, mediaStream, shareRef);
   const isSharing = isRecieveSharing || isStartedShare;
   const [containerDimension, setContainerDimension] = useState({
     width: 0,
@@ -68,9 +56,9 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
     setActiveVideo(userId);
   }, []);
   useEffect(() => {
-    zmClient.on('video-active-change', onActiveVideoChange);
+    zmClient.on("video-active-change", onActiveVideoChange);
     return () => {
-      zmClient.off('video-active-change', onActiveVideoChange);
+      zmClient.off("video-active-change", onActiveVideoChange);
     };
   }, [zmClient, onActiveVideoChange]);
 
@@ -78,11 +66,11 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
     () => participants.find((user) => user.userId === activeVideo),
     [participants, activeVideo],
   );
-  const isCurrentUserStartedVideo = zmClient.getCurrentUserInfo()?.bVideoOn;
+  const isCurrentUserStartedVideo = zmClient.getCurrentUserInfo().bVideoOn;
   useEffect(() => {
-    if (mediaStream && videoRef.current && isVideoDecodeReady) {
+    if (mediaStream !== null && videoRef.current !== null && isVideoDecodeReady) {
       if (activeUser?.bVideoOn !== previousActiveUser.current?.bVideoOn) {
-        if (activeUser?.bVideoOn) {
+        if (activeUser?.bVideoOn !== undefined) {
           mediaStream.renderVideo(
             videoRef.current,
             activeUser.userId,
@@ -90,26 +78,20 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
             canvasDimension.height,
             0,
             0,
-            VideoQuality.Video_360P as any,
+            VideoQuality.Video_360P,
           );
         } else {
-          if (previousActiveUser.current?.bVideoOn) {
-            mediaStream.stopRenderVideo(
-              videoRef.current,
-              previousActiveUser.current?.userId,
-            );
+          if (previousActiveUser.current?.bVideoOn === true) {
+            mediaStream.stopRenderVideo(videoRef.current, previousActiveUser.current.userId);
           }
         }
       }
       if (
-        activeUser?.bVideoOn &&
-        previousActiveUser.current?.bVideoOn &&
+        activeUser?.bVideoOn === true &&
+        previousActiveUser.current?.bVideoOn === true &&
         activeUser.userId !== previousActiveUser.current.userId
       ) {
-        mediaStream.stopRenderVideo(
-          videoRef.current,
-          previousActiveUser.current?.userId,
-        );
+        mediaStream.stopRenderVideo(videoRef.current, previousActiveUser.current.userId);
         mediaStream.renderVideo(
           videoRef.current,
           activeUser.userId,
@@ -117,32 +99,28 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
           canvasDimension.height,
           0,
           0,
-          VideoQuality.Video_360P as any,
+          VideoQuality.Video_360P,
         );
       }
       previousActiveUser.current = activeUser;
     }
   }, [mediaStream, activeUser, isVideoDecodeReady, canvasDimension]);
   useMount(() => {
-    if (mediaStream) {
+    if (mediaStream !== null) {
       setActiveVideo(mediaStream.getActiveVideoId());
     }
   });
   useEffect(() => {
-    if (isSharing && shareContainerRef.current) {
+    if (isSharing && shareContainerRef.current !== null) {
       const { width, height } = sharedContentDimension;
-      const { width: containerWidth, height: containerHeight } =containerDimension;
-      const ratio = Math.min(
-        containerWidth / width,
-        containerHeight / height,
-        1
-      );
+      const { width: containerWidth, height: containerHeight } = containerDimension;
+      const ratio = Math.min(containerWidth / width, containerHeight / height, 1);
       setShareViewDimension({
-        width:Math.floor(width * ratio),
-        height:Math.floor(height * ratio)
-      })
+        width: Math.floor(width * ratio),
+        height: Math.floor(height * ratio),
+      });
     }
-  },[isSharing,sharedContentDimension,containerDimension]);
+  }, [isSharing, sharedContentDimension, containerDimension]);
 
   const onShareContainerResize = useCallback(({ width, height }) => {
     _.throttle(() => {
@@ -152,17 +130,14 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
   useSizeCallback(shareContainerRef.current, onShareContainerResize);
   useEffect(() => {
     if (!isShallowEqual(shareViewDimension, sharedContentDimension)) {
-      mediaStream?.updateSharingCanvasDimension(
-        shareViewDimension.width,
-        shareViewDimension.height
-      );
+      mediaStream?.updateSharingCanvasDimension(shareViewDimension.width, shareViewDimension.height);
     }
   }, [mediaStream, sharedContentDimension, shareViewDimension]);
   return (
     <div className="viewport">
       <div
-        className={classnames('share-container', {
-          'in-sharing': isSharing,
+        className={classnames("share-container", {
+          "in-sharing": isSharing,
         })}
         ref={shareContainerRef}
       >
@@ -173,35 +148,26 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
             height: `${shareViewDimension.height}px`,
           }}
         >
-          <canvas
-            className={classnames('share-canvas', { hidden: isStartedShare })}
-            ref={shareRef}
-          />
+          <canvas className={classnames("share-canvas", { hidden: isStartedShare })} ref={shareRef} />
           {isSupportWebCodecs() ? (
-            <video
-              className={classnames('share-canvas', { hidden: isRecieveSharing })}
-              ref={selfShareRef}
-            />
+            <video className={classnames("share-canvas", { hidden: isRecieveSharing })} ref={selfShareRef} />
           ) : (
-            <canvas
-              className={classnames('share-canvas', { hidden: isRecieveSharing })}
-              ref={selfShareRef}
-            />
+            <canvas className={classnames("share-canvas", { hidden: isRecieveSharing })} ref={selfShareRef} />
           )}
         </div>
       </div>
       <div
-        className={classnames('video-container', {
-          'in-sharing': isSharing,
+        className={classnames("video-container", {
+          "in-sharing": isSharing,
         })}
       >
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
         {isUseVideoElementToDrawSelfVideo ? (
           <video
             id={SELF_VIDEO_ID}
-            className={classnames('self-video', {
-              'single-self-video': participants.length === 1,
-              'self-video-show': isCurrentUserStartedVideo
+            className={classnames("self-video", {
+              "single-self-video": participants.length === 1,
+              "self-video-show": isCurrentUserStartedVideo,
             })}
           />
         ) : (
@@ -209,13 +175,15 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
             id={SELF_VIDEO_ID}
             width="254"
             height="143"
-            className={classnames('self-video', {
-              'single-self-video': participants.length === 1,
-              'self-video-show': isCurrentUserStartedVideo
+            className={classnames("self-video", {
+              "single-self-video": participants.length === 1,
+              "self-video-show": isCurrentUserStartedVideo,
             })}
           />
         )}
-        {activeUser && <Avatar participant={activeUser} isActive={false} className="single-view-avatar" />}
+        {activeUser !== undefined && (
+          <Avatar participant={activeUser} isActive={false} className="single-view-avatar" />
+        )}
       </div>
       <VideoFooter className="video-operations" sharing shareRef={selfShareRef} />
     </div>

@@ -1,5 +1,6 @@
-import React from 'react';
-import { MediaStream } from '../index-types';
+import React from "react";
+
+import { MediaStream } from "../index-types.d";
 interface MediaContext {
   audio: {
     encode: boolean;

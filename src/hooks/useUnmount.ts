@@ -1,20 +1,19 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
-export function useUnmount(fn: Function) {
-  const fnRef = useRef<Function>(fn);
+export function useUnmount(fn: () => void) {
+  const fnRef = useRef<() => void>(fn);
   fnRef.current = fn;
   useEffect(
     () => () => {
-      if (fnRef.current) {
-        fnRef.current();
-      }
+      fnRef.current();
     },
     [],
   );
 }
 
-export function useMount(fn: Function) {
+export function useMount(fn: () => void) {
   useEffect(() => {
     fn();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }

@@ -1,10 +1,12 @@
-import React, { useCallback } from 'react';
-import { Menu, Dropdown, Button } from 'antd';
-import { CheckOutlined, DownOutlined } from '@ant-design/icons';
-import classNames from 'classnames';
-import { CommandReceiver } from '../cmd-types';
-import './cmd-receiver.scss';
-const { Item: MenuItem, ItemGroup: MenuItemGroup } = Menu;
+import { useCallback } from "react";
+
+import { CheckOutlined, DownOutlined } from "@ant-design/icons";
+import { Button, Dropdown, Menu } from "antd";
+import classNames from "classnames";
+
+import { CommandReceiver } from "../cmd-types.d";
+import "./cmd-receiver.scss";
+const { Item: MenuItem } = Menu;
 
 interface CommandReceiverProps {
   chatUsers: CommandReceiver[];
@@ -14,25 +16,18 @@ interface CommandReceiverProps {
 }
 
 const CommandReceiverContainer = (props: CommandReceiverProps) => {
-  const {
-    chatUsers,
-    selectedChatUser,
-    setCommandUser,
-    currentUserId,
-  } = props;
+  const { chatUsers, selectedChatUser, setCommandUser, currentUserId } = props;
   const menuItems = chatUsers.map((item) => (
     <MenuItem
       key={item.userId}
-      className={classNames('chat-receiver-item', {
+      className={classNames("chat-receiver-item", {
         selected: item.userId === selectedChatUser?.userId,
       })}
       icon={item.userId === selectedChatUser?.userId && <CheckOutlined />}
     >
       {currentUserId === item.userId ? item.displayName + "(Me)" : item.displayName}
-      {(item?.isCoHost || item?.isHost) && (
-        <span className="chat-receiver-item-affix">
-          ({item?.isHost ? 'Host' : 'Co-host'})
-        </span>
+      {(item.isCoHost === true || item.isHost !== undefined) && (
+        <span className="chat-receiver-item-affix">({item.isHost === true ? "Host" : "Co-host"})</span>
       )}
     </MenuItem>
   ));
@@ -46,7 +41,7 @@ const CommandReceiverContainer = (props: CommandReceiverProps) => {
     },
     [selectedChatUser, setCommandUser],
   );
- 
+
   const menu = (
     <Menu onClick={onMenuItemClick} className="chat-receiver-dropdown-menu">
       {menuItems}
@@ -56,7 +51,7 @@ const CommandReceiverContainer = (props: CommandReceiverProps) => {
     <div className="chat-receiver">
       <div className="chat-receiver-wrap">
         <span className="chat-to">To:</span>
-        <Dropdown overlay={menu} placement="topLeft" trigger={['click']}>
+        <Dropdown overlay={menu} placement="topLeft" trigger={["click"]}>
           <Button className="chat-receiver-button">
             {selectedChatUser?.displayName} <DownOutlined />
           </Button>
