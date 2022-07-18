@@ -33,7 +33,7 @@ const CommandReceiverContainer = (props: CommandReceiverProps) => {
   ));
 
   const onMenuItemClick = useCallback(
-    ({ key }) => {
+    ({ key }: { key: string }) => {
       const userId = Number(key);
       if (userId !== selectedChatUser?.userId) {
         setCommandUser(userId);

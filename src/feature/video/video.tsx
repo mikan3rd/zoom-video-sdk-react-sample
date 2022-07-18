@@ -69,7 +69,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
     }
   }, [isSharing, sharedContentDimension, containerDimension]);
 
-  const onShareContainerResize = useCallback(({ width, height }) => {
+  const onShareContainerResize = useCallback(({ width, height }: { width: number; height: number }) => {
     _.throttle(() => {
       setContainerDimension({ width, height });
     }, 50).call(this);
