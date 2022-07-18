@@ -109,7 +109,7 @@ const getDataSouce = (
   return streamMertics.map((metrics, index) => {
     let send = "";
     let receive = "";
-    if (encodingData !== null) {
+    if (encodingData !== undefined) {
       let value;
       if (Array.isArray(metrics.value)) {
         value = metrics.value.map((m: string) => (encodingData as { [key: string]: any })[m]);
@@ -118,7 +118,7 @@ const getDataSouce = (
       }
       send = value === 0 ? "-" : metrics.format(value);
     }
-    if (decodingData !== null) {
+    if (decodingData !== undefined) {
       let value;
       if (Array.isArray(metrics.value)) {
         value = metrics.value.map((m: string) => (decodingData as { [key: string]: any })[m]);
@@ -156,7 +156,7 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
   const { visible, defaultTab, isStartedAudio, isStartedVideo, isMuted, setVisible } = props;
   const zmclient = useContext(ZoomContext);
   const { mediaStream } = useContext(MediaContext);
-  const [tab, setTab] = useState(defaultTab || "audio");
+  const [tab, setTab] = useState(defaultTab ?? "audio");
   const [audioEncodingStatistic, setAudioEncodingStatistic] = useState<AudioQosData>();
   const [audioDecodingStatistic, setAudioDecodingStatistic] = useState<AudioQosData>();
   const [videoEncodingStatistic, setVideoEncodingStatistic] = useState<VideoQosData>();
@@ -167,14 +167,14 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
     setTab(key);
   };
   const clearAudioTimer = () => {
-    if (audioDecodeTimerRef.current) {
+    if (audioDecodeTimerRef.current === 0) {
       clearTimeout(audioDecodeTimerRef.current);
       audioDecodeTimerRef.current = 0;
     }
   };
 
   const clearVideoTimer = () => {
-    if (videoDecodeTimerRef.current) {
+    if (videoDecodeTimerRef.current === 0) {
       clearTimeout(videoDecodeTimerRef.current);
       videoDecodeTimerRef.current = 0;
     }

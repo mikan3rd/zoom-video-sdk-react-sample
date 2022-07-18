@@ -1,4 +1,4 @@
-const { override,addWebpackPlugin,overrideDevServer } = require('customize-cra');
+const { override,addWebpackPlugin,overrideDevServer, disableEsLint } = require('customize-cra');
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
@@ -22,6 +22,7 @@ const addDevServerCOOPReponseHeader = (config) => {
 
 module.exports = {
   webpack:override(
+    disableEsLint(),
     addWebpackPlugin(new CopyPlugin({
       patterns: [{
         from: path.resolve(

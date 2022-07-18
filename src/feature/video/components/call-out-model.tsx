@@ -1,6 +1,8 @@
 import { Checkbox, Form, Input, Modal, Select } from "antd";
 import classNames from "classnames";
+
 import "./call-out-model.scss";
+
 interface CallOutModelProps {
   visible: boolean;
   phoneCountryList?: any[];
@@ -40,7 +42,7 @@ const CallOutModel = (props: CallOutModelProps) => {
             });
           }
         } catch (e) {
-          console.log(e);
+          console.error(e);
         }
       }}
       onCancel={async () => {

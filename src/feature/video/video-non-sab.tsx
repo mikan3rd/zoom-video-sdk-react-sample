@@ -18,10 +18,10 @@ import { useCanvasDimension } from "./hooks/useCanvasDimension";
 import { useGalleryLayout } from "./hooks/useGalleryLayout";
 import { usePagination } from "./hooks/usePagination";
 import { useShare } from "./hooks/useShare";
+import { SELF_VIDEO_ID } from "./video-constants";
 
 import "./video.scss";
 
-import { SELF_VIDEO_ID } from "./video-constants";
 const isUseVideoElementToDrawSelfVideo = isAndroidBrowser() || isSupportOffscreenCanvas();
 
 const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => {

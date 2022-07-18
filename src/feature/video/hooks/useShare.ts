@@ -1,7 +1,7 @@
 import { MutableRefObject, useCallback, useEffect, useState } from "react";
 
 import { useMount, usePrevious, useUnmount } from "../../../hooks";
-import { MediaStream, ZoomClient } from "../../../index-types";
+import { MediaStream, ZoomClient } from "../../../index-types.d";
 export function useShare(
   zmClient: ZoomClient,
   mediaStream: MediaStream | null,
@@ -57,7 +57,7 @@ export function useShare(
     if (shareRef.current !== null && previousIsRecieveSharing !== isRecieveSharing) {
       if (isRecieveSharing) {
         mediaStream?.startShareView(shareRef.current as HTMLCanvasElement, activeSharingId);
-      } else if (previousIsRecieveSharing === true && isRecieveSharing === false) {
+      } else if (previousIsRecieveSharing === true) {
         mediaStream?.stopShareView();
       }
     }
@@ -73,9 +73,7 @@ export function useShare(
   }, [mediaStream]);
   useMount(() => {
     const currentUser = zmClient.getCurrentUserInfo();
-    if (currentUser) {
-      setCurrentUserId(currentUser.userId);
-    }
+    setCurrentUserId(currentUser.userId);
   });
   useUnmount(() => {
     if (isRecieveSharing) {

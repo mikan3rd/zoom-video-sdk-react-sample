@@ -1,8 +1,8 @@
 import { MutableRefObject, useCallback, useEffect, useState } from "react";
 
-import { MediaStream, Participant, ZoomClient } from "../../../index-types";
+import { MediaStream, Participant, ZoomClient } from "../../../index-types.d";
 import { getVideoLayout } from "../video-layout-helper";
-import { CellLayout, Dimension, Pagination } from "../video-types";
+import { CellLayout, Dimension, Pagination } from "../video-types.d";
 
 import { useRenderVideo } from "./useRenderVideo";
 /**
@@ -33,7 +33,7 @@ export function useGalleryLayout(
   const onParticipantsChange = useCallback(() => {
     const participants = zmClient.getAllUser();
     const currentUser = zmClient.getCurrentUserInfo();
-    if (currentUser && participants.length > 0) {
+    if (participants.length > 0) {
       let pageParticipants: any[] = [];
       if (participants.length === 1) {
         pageParticipants = participants;

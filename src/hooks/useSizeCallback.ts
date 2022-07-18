@@ -15,7 +15,7 @@ export function useSizeCallback(
   callback: (payload: { width: number; height: number }) => void,
 ) {
   useLayoutEffect(() => {
-    if (target == null) {
+    if (target === null) {
       return () => {
         //
       };
