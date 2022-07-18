@@ -1,11 +1,17 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
-import { AudioQosData, VideoQosData } from "@zoom/videosdk";
+import {
+  AudioQosData,
+  VideoQosData,
+  event_audio_statistic_data_change,
+  event_video_statistic_data_change,
+} from "@zoom/videosdk";
 import { Modal, Table, Tabs } from "antd";
 
 import MediaContext from "../../../context/media-context";
 import ZoomContext from "../../../context/zoom-context";
 import { useMount, useUnmount } from "../../../hooks";
+
 interface AudioVideoStatisticModelProps {
   visible: boolean;
   defaultTab?: string;
@@ -180,7 +186,7 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
     }
   };
 
-  const onAudioStatisticChange = useCallback((payload) => {
+  const onAudioStatisticChange = useCallback((payload: Parameters<typeof event_audio_statistic_data_change>[0]) => {
     const {
       data: { encoding, ...restProps },
     } = payload;
@@ -195,7 +201,8 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
       }, 2000);
     }
   }, []);
-  const onVideoStatisticChange = useCallback((payload) => {
+
+  const onVideoStatisticChange = useCallback((payload: Parameters<typeof event_video_statistic_data_change>[0]) => {
     const {
       data: { encoding, ...restProps },
     } = payload;

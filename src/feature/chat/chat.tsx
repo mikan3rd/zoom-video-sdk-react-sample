@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 
-import { ChatPrivilege } from "@zoom/videosdk";
+import { ChatPrivilege, event_chat_privilege_change } from "@zoom/videosdk";
 import { Input } from "antd";
 import { produce } from "immer";
 
@@ -60,7 +60,7 @@ const ChatContainer = () => {
     [chatWrapRef],
   );
   const onChatPrivilegeChange = useCallback(
-    (payload) => {
+    (payload: Parameters<typeof event_chat_privilege_change>[0]) => {
       setChatPrivilege(payload.chatPrivilege);
       if (chatClient !== null) {
         setChatReceivers(chatClient.getReceivers());
@@ -103,7 +103,7 @@ const ChatContainer = () => {
     }
   }, [chatReceivers, chatUser]);
   const setChatUserId = useCallback(
-    (userId) => {
+    (userId: number) => {
       const user = chatReceivers.find((u) => u.userId === userId);
       if (user !== undefined) {
         setChatUser(user);

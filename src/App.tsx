@@ -1,6 +1,11 @@
 import { useCallback, useContext, useEffect, useMemo, useReducer, useState } from "react";
 
-import ZoomVideo, { ConnectionState } from "@zoom/videosdk";
+import ZoomVideo, {
+  ConnectionState,
+  event_connection_change,
+  event_dial_out_change,
+  event_media_sdk_change,
+} from "@zoom/videosdk";
 import { Modal, message } from "antd";
 import { produce } from "immer";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
@@ -139,7 +144,7 @@ function App(props: AppProps) {
     };
   }, [signature, zmClient, topic, name, password, webEndpoint, galleryViewWithoutSAB]);
   const onConnectionChange = useCallback(
-    (payload) => {
+    (payload: Parameters<typeof event_connection_change>[0]) => {
       if (payload.state === ConnectionState.Reconnecting) {
         setIsLoading(true);
         setIsFailover(true);
@@ -153,7 +158,7 @@ function App(props: AppProps) {
         if (isFailover) {
           setIsLoading(false);
         }
-      } else if (payload.state === ConnectionState.Closed) {
+      } else {
         setStatus("closed");
         dispatch({ type: "reset-media" });
         if (payload.reason === "ended by host") {
@@ -166,17 +171,13 @@ function App(props: AppProps) {
     },
     [isFailover],
   );
-  const onMediaSDKChange = useCallback((payload) => {
+  const onMediaSDKChange = useCallback((payload: Parameters<typeof event_media_sdk_change>[0]) => {
     const { action, type, result } = payload;
     dispatch({ type: `${type}-${action}`, payload: result === "success" });
   }, []);
 
-  const onDialoutChange = useCallback((payload) => {
+  const onDialoutChange = useCallback((payload: Parameters<typeof event_dial_out_change>[0]) => {
     console.info("onDialoutChange", payload);
-  }, []);
-
-  const onAudioMerged = useCallback((payload) => {
-    console.info("onAudioMerged", payload);
   }, []);
 
   const onLeaveOrJoinSession = useCallback(async () => {
@@ -193,14 +194,13 @@ function App(props: AppProps) {
     zmClient.on("connection-change", onConnectionChange);
     zmClient.on("media-sdk-change", onMediaSDKChange);
     zmClient.on("dialout-state-change", onDialoutChange);
-    zmClient.on("merged-audio", onAudioMerged);
+
     return () => {
       zmClient.off("connection-change", onConnectionChange);
       zmClient.off("media-sdk-change", onMediaSDKChange);
       zmClient.off("dialout-state-change", onDialoutChange);
-      zmClient.off("merged-audio", onAudioMerged);
     };
-  }, [zmClient, onConnectionChange, onMediaSDKChange, onDialoutChange, onAudioMerged]);
+  }, [zmClient, onConnectionChange, onMediaSDKChange, onDialoutChange]);
   return (
     <div className="App">
       {loading && <LoadingLayer content={loadingText} />}

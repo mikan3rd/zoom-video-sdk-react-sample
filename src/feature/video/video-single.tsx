@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-import { VideoQuality } from "@zoom/videosdk";
+import { VideoQuality, event_video_active_change } from "@zoom/videosdk";
 import classnames from "classnames";
 import _ from "lodash";
 import { RouteComponentProps } from "react-router-dom";
@@ -51,7 +51,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
   useParticipantsChange(zmClient, (payload) => {
     setParticipants(payload);
   });
-  const onActiveVideoChange = useCallback((payload) => {
+  const onActiveVideoChange = useCallback((payload: Parameters<typeof event_video_active_change>[0]) => {
     const { userId } = payload;
     setActiveVideo(userId);
   }, []);
@@ -122,7 +122,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
     }
   }, [isSharing, sharedContentDimension, containerDimension]);
 
-  const onShareContainerResize = useCallback(({ width, height }) => {
+  const onShareContainerResize = useCallback(({ width, height }: { width: number; height: number }) => {
     _.throttle(() => {
       setContainerDimension({ width, height });
     }, 50).call(this);

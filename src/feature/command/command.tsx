@@ -119,7 +119,7 @@ const CommandContainer = () => {
     }
   }, [commandReceivers, command]);
   const setCommandUserId = useCallback(
-    (userId) => {
+    (userId: number) => {
       const user = commandReceivers.find((u) => u.userId === userId);
       if (user !== undefined) {
         setCommandUser(user);

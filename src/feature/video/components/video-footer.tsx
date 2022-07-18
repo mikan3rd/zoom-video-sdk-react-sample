@@ -8,6 +8,11 @@ import {
   PhoneCallCountry,
   RecordingStatus,
   VideoCapturingState,
+  event_current_audio_change,
+  event_dial_out_change,
+  event_passively_stop_share,
+  event_share_audio_change,
+  event_video_capturing_change,
 } from "@zoom/videosdk";
 import { message } from "antd";
 import classNames from "classnames";
@@ -158,11 +163,13 @@ const VideoFooter = (props: VideoFooterProps) => {
     }
     return Promise.resolve();
   };
-  const onHostAudioMuted = useCallback((payload) => {
+  const onHostAudioMuted = useCallback((payload: Parameters<typeof event_current_audio_change>[0]) => {
     const { action, source, type } = payload;
     if (action === AudioChangeAction.Join) {
       setIsStartedAudio(true);
-      setAudio(type);
+      if (type !== undefined) {
+        setAudio(type);
+      }
     } else if (action === AudioChangeAction.Leave) {
       setIsStartedAudio(false);
     } else if (action === AudioChangeAction.Muted) {
@@ -170,9 +177,9 @@ const VideoFooter = (props: VideoFooterProps) => {
       if (source === MutedSource.PassiveByMuteOne) {
         message.info("Host muted you");
       }
-    } else if (action === AudioChangeAction.Unmuted) {
+    } else {
       setIsMuted(false);
-      if (source === "passive") {
+      if (source === MutedSource.PassiveByMuteAll || source === MutedSource.PassiveByMuteOne) {
         message.info("Host unmuted you");
       }
     }
@@ -186,10 +193,12 @@ const VideoFooter = (props: VideoFooterProps) => {
       setIsStartedScreenShare(false);
     }
   }, [mediaStream, isStartedScreenShare, shareRef]);
-  const onPassivelyStopShare = useCallback(({ reason }) => {
+
+  const onPassivelyStopShare = useCallback((reason: Parameters<typeof event_passively_stop_share>[0]) => {
     console.info("passively stop reason:", reason);
     setIsStartedScreenShare(false);
   }, []);
+
   const onDeviceChange = useCallback(() => {
     if (mediaStream !== null) {
       setMicList(mediaStream.getMicList());
@@ -205,7 +214,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     setRecordingStatus(recordingClient?.getCloudRecordingStatus() ?? "");
   }, [recordingClient]);
 
-  const onDialOutChange = useCallback((payload) => {
+  const onDialOutChange = useCallback((payload: Parameters<typeof event_dial_out_change>[0]) => {
     setPhoneCallStatus(payload.code);
   }, []);
 
@@ -235,18 +244,18 @@ const VideoFooter = (props: VideoFooterProps) => {
       }
     }
   };
-  const onVideoCaptureChange = useCallback((payload) => {
+  const onVideoCaptureChange = useCallback((payload: Parameters<typeof event_video_capturing_change>[0]) => {
     if (payload.state === VideoCapturingState.Started) {
       setIsStartedVideo(true);
     } else {
       setIsStartedVideo(false);
     }
   }, []);
-  const onShareAudioChange = useCallback((payload) => {
+  const onShareAudioChange = useCallback((payload: Parameters<typeof event_share_audio_change>[0]) => {
     const { state } = payload;
     if (state === "on") {
       setIsComputerAudioDisabled(true);
-    } else if (state === "off") {
+    } else {
       setIsComputerAudioDisabled(false);
     }
   }, []);
