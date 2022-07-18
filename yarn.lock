@@ -1847,10 +1847,10 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
-"@types/jsrsasign@^8.0.10":
-  version "8.0.13"
-  resolved "https://registry.yarnpkg.com/@types/jsrsasign/-/jsrsasign-8.0.13.tgz#770c1e429107dfb0cc4f5b78b472584511a55a28"
-  integrity sha512-+0Ij59D6NXP48KkeLhPXeQKOyLjvA9CD7zacc0Svy2IWHdl62BmDeTvGSIwKaGZSoamLJOo+on1AG/wPRLsd7A==
+"@types/jsrsasign@10.5.1":
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/@types/jsrsasign/-/jsrsasign-10.5.1.tgz#6f9defd46dfcf324b1cff08a06be639858deee3b"
+  integrity sha512-QqM03IXHY6SX835mWdx7Vp8ZOxw/hcnMjGjapUQf+pgFPRyGdjg3jxFsr4p+rolKcdRhptm3mtVQNk4OMhCQcA==
 
 "@types/lodash@^4.14.168":
   version "4.14.182"
