@@ -33,16 +33,14 @@ declare global {
   }
 }
 
-interface AppProps {
-  meetingArgs: {
-    sdkKey: string;
-    topic: string;
-    signature: string;
-    name: string;
-    password?: string;
-    enforceGalleryView?: string;
-  };
-}
+export type AppProps = {
+  topic: string;
+  signature: string;
+  name: string;
+  password?: string;
+  enforceGalleryView?: boolean;
+};
+
 const mediaShape = {
   audio: {
     encode: false,
@@ -94,9 +92,7 @@ const mediaReducer = produce((draft, action) => {
 }, mediaShape);
 
 function App(props: AppProps) {
-  const {
-    meetingArgs: { sdkKey, topic, signature, name, password, enforceGalleryView },
-  } = props;
+  const { topic, signature, name, password, enforceGalleryView } = props;
   const [loading, setIsLoading] = useState(true);
   const [loadingText, setLoadingText] = useState("");
   const [isFailover, setIsFailover] = useState<boolean>(false);
@@ -110,7 +106,8 @@ function App(props: AppProps) {
   const zmClient = useContext(ZoomContext);
   const webEndpoint = "zoom.us";
   const mediaContext = useMemo(() => ({ ...mediaState, mediaStream }), [mediaState, mediaStream]);
-  const galleryViewWithoutSAB = enforceGalleryView !== undefined && !window.crossOriginIsolated;
+  const galleryViewWithoutSAB = enforceGalleryView === true && !window.crossOriginIsolated;
+
   useEffect(() => {
     const init = async () => {
       await zmClient.init("en-US", `${window.location.origin}/lib`, {
@@ -140,7 +137,7 @@ function App(props: AppProps) {
     return () => {
       ZoomVideo.destroyClient();
     };
-  }, [sdkKey, signature, zmClient, topic, name, password, webEndpoint, galleryViewWithoutSAB]);
+  }, [signature, zmClient, topic, name, password, webEndpoint, galleryViewWithoutSAB]);
   const onConnectionChange = useCallback(
     (payload) => {
       if (payload.state === ConnectionState.Reconnecting) {

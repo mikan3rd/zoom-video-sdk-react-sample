@@ -1,6 +1,7 @@
 import { VideoQuality } from "@zoom/videosdk";
 
-import { CellLayout, Position } from "./video-types";
+import { CellLayout } from "./video-types.d";
+
 interface Grid {
   row: number;
   column: number;
@@ -14,7 +15,7 @@ interface Layout {
 }
 const layoutCandidates: { [key: number]: Grid[] } = Array.from({ length: 9 })
   .map((value, index) => {
-    const count = index + 1;
+    const count: number = index + 1;
     const mid = Math.ceil(count / 2);
     const candidates = Array.from({ length: mid })
       .map((v, i) => {
@@ -72,9 +73,12 @@ export function getVideoLayout(rootWidth: number, rootHeight: number, count: num
   maxRows = Math.min(maxRows, count);
   maxColumns = Math.min(maxColumns, count);
   const actualCount = Math.min(count, maxRows * maxColumns);
-  const layoutOfCount = layoutCandidates[actualCount].filter(
+  const layoutOfCount = layoutCandidates[actualCount]?.filter(
     (item) => item.row <= maxRows && item.column <= maxColumns,
   );
+  if (layoutOfCount === undefined) {
+    return [];
+  }
   const preferredLayout: Layout = layoutOfCount
     .map((item) => {
       const { column, row } = item;

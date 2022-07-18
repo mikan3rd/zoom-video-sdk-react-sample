@@ -5,6 +5,7 @@ import {
   DialOutOption,
   DialoutState,
   MutedSource,
+  PhoneCallCountry,
   RecordingStatus,
   VideoCapturingState,
 } from "@zoom/videosdk";
@@ -40,7 +41,7 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [isStartedVideo, setIsStartedVideo] = useState(false);
   const [audio, setAudio] = useState("");
   const [isSupportPhone, setIsSupportPhone] = useState(false);
-  const [phoneCountryList, setPhoneCountryList] = useState<any[]>([]);
+  const [phoneCountryList, setPhoneCountryList] = useState<PhoneCallCountry[]>([]);
   const [phoneCallStatus, setPhoneCallStatus] = useState<DialoutState>();
   const [isStartedScreenShare, setIsStartedScreenShare] = useState(false);
   const [isMirrored, setIsMirrored] = useState(false);
@@ -105,12 +106,12 @@ const VideoFooter = (props: VideoFooterProps) => {
     if (mediaStream !== null) {
       const [type, deviceId] = key.split("|");
       if (type === "microphone") {
-        if (deviceId !== activeMicrophone) {
+        if (deviceId !== undefined && deviceId !== activeMicrophone) {
           await mediaStream.switchMicrophone(deviceId);
           setActiveMicrophone(mediaStream.getActiveMicrophone());
         }
       } else if (type === "speaker") {
-        if (deviceId !== activeSpeaker) {
+        if (deviceId !== undefined && deviceId !== activeSpeaker) {
           await mediaStream.switchSpeaker(deviceId);
           setActiveSpeaker(mediaStream.getActiveSpeaker());
         }
@@ -144,7 +145,10 @@ const VideoFooter = (props: VideoFooterProps) => {
     await mediaStream?.inviteByPhone(code, phoneNumber, name, option);
   };
   const onPhoneCallCancel = async (code: string, phoneNumber: string, option: { callMe: boolean }) => {
-    if ([DialoutState.Calling, DialoutState.Ringing, DialoutState.Accepted].includes(phoneCallStatus as any)) {
+    if (
+      phoneCallStatus !== undefined &&
+      [DialoutState.Calling, DialoutState.Ringing, DialoutState.Accepted].includes(phoneCallStatus)
+    ) {
       await mediaStream?.cancelInviteByPhone(code, phoneNumber, option);
       await new Promise((resolve) => {
         setTimeout(() => {

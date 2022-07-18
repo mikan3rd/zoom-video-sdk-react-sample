@@ -8,3 +8,4 @@
 
 - https://github.com/zoom/videosdk-web-sample
 - https://www.npmjs.com/package/@zoom/videosdk
+- https://marketplace.zoom.us/docs/sdk/video/web

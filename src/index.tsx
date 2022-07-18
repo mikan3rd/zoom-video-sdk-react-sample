@@ -1,5 +1,4 @@
-/* eslint-disable no-restricted-globals */
-
+import React from "react";
 
 import ZoomVideo from "@zoom/videosdk";
 import ReactDOM from "react-dom";
@@ -11,28 +10,51 @@ import ZoomContext from "./context/zoom-context";
 import reportWebVitals from "./reportWebVitals";
 import { generateVideoToken } from "./utils/util";
 
-let meetingArgs: any = Object.fromEntries(new URLSearchParams(location.search));
-// Add enforceGalleryView to turn on the gallery view without SharedAddayBuffer
-if (!meetingArgs.sdkKey || !meetingArgs.topic || !meetingArgs.name || !meetingArgs.signature) {
-  meetingArgs = { ...meetingArgs, ...devConfig };
-  meetingArgs.enforceGalleryView = true;
+type MeegingArgsType = {
+  topic: string;
+  signature: string;
+  name: string;
+  password?: string;
+  enforceGalleryView?: string;
+};
+
+const params: Partial<MeegingArgsType> = Object.fromEntries(new URLSearchParams(location.search));
+
+const config = {
+  ...devConfig,
+  ...params,
+};
+
+if (typeof config.enforceGalleryView === "string") {
+  config.enforceGalleryView = config.enforceGalleryView === "true";
 }
-if (!meetingArgs.signature && meetingArgs.sdkSecret && meetingArgs.topic) {
-  meetingArgs.signature = generateVideoToken(
-    meetingArgs.sdkKey,
-    meetingArgs.sdkSecret,
-    meetingArgs.topic,
-    meetingArgs.password,
-    "",
-    "",
-  );
+
+if (config.signature === undefined && config.sdkKey !== undefined && config.sdkSecret !== undefined) {
+  config.signature = generateVideoToken(config.sdkKey, config.sdkSecret, config.topic, config.password, "", "");
 }
-console.log("meetingArgs", meetingArgs);
+
+console.info(config);
+
+if (config.signature === undefined) {
+  throw new Error("signature is required");
+}
+
+if (typeof config.enforceGalleryView === "string") {
+  throw new Error("enforceGalleryView must be boolean");
+}
+
 const zmClient = ZoomVideo.createClient();
+
 ReactDOM.render(
   <React.StrictMode>
     <ZoomContext.Provider value={zmClient}>
-      <App meetingArgs={meetingArgs as any} />
+      <App
+        topic={config.topic}
+        signature={config.signature}
+        name={config.name}
+        password={config.password}
+        enforceGalleryView={config.enforceGalleryView}
+      />
     </ZoomContext.Provider>
   </React.StrictMode>,
   document.getElementById("root"),

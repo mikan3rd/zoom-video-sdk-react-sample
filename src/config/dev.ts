@@ -6,5 +6,6 @@ export const devConfig = {
   topic: "topic",
   name: `${getExploreName()}-${Math.floor(Math.random() * 1000)}`,
   password: "",
-  signature: "",
+  signature: undefined,
+  enforceGalleryView: true,
 };

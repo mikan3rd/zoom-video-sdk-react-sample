@@ -53,9 +53,12 @@ export function isShallowEqual(objA: any, objB: any) {
     return false;
   }
 
-  // eslint-disable-next-line no-plusplus
   for (let i = 0; i < len; i++) {
     const key = aKeys[i];
+
+    if (key === undefined) {
+      continue;
+    }
 
     if (objA[key] !== objB[key] || !Object.prototype.hasOwnProperty.call(objB, key)) {
       return false;

@@ -1,10 +1,8 @@
-/* eslint-disable no-restricted-globals */
-
-
 import { Button, Card } from "antd";
 import { RouteComponentProps } from "react-router-dom";
 
-import { IconFont } from "../../component/icon-font";
+import { IconFont, IconType } from "../../component/icon-font";
+
 import "./home.scss";
 
 const { Meta } = Card;
@@ -17,7 +15,12 @@ const Home: React.FunctionComponent<HomeProps> = (props) => {
   const onCardClick = (type: string) => {
     history.push(`/${type}${location.search}`);
   };
-  const featureList = [
+  const featureList: {
+    key: string;
+    icon: IconType;
+    title: string;
+    description: string;
+  }[] = [
     {
       key: "video",
       icon: "icon-meeting",
@@ -43,7 +46,7 @@ const Home: React.FunctionComponent<HomeProps> = (props) => {
       description: "Audio and Video preview",
     },
   ];
-  let actionText;
+  let actionText: string | null = null;
   if (status === "connected") {
     actionText = "Leave";
   } else if (status === "closed") {
@@ -65,7 +68,7 @@ const Home: React.FunctionComponent<HomeProps> = (props) => {
             <span>Doc</span>
           </a>
         </div>
-        {actionText && (
+        {actionText !== null && (
           <Button type="link" className="navleave" onClick={onLeaveOrJoinSession}>
             {actionText}
           </Button>
