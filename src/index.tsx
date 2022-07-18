@@ -1,7 +1,7 @@
 import React from "react";
 
 import ZoomVideo from "@zoom/videosdk";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import "./index.css";
 import App from "./App";
@@ -45,7 +45,15 @@ if (typeof config.enforceGalleryView === "string") {
 
 const zmClient = ZoomVideo.createClient();
 
-ReactDOM.render(
+const container = document.getElementById("root");
+
+if (container === null) {
+  throw new Error("root container is required");
+}
+
+const root = createRoot(container);
+
+root.render(
   <React.StrictMode>
     <ZoomContext.Provider value={zmClient}>
       <App
@@ -57,7 +65,6 @@ ReactDOM.render(
       />
     </ZoomContext.Provider>
   </React.StrictMode>,
-  document.getElementById("root"),
 );
 
 // If you want to start measuring performance in your app, pass a function
