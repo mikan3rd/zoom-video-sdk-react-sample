@@ -22,8 +22,7 @@
     "@emotion"
   ],
   "env": {
-    "browser": true,
-    "jest": true
+    "browser": true
   },
   "parserOptions": {
     "project": [
