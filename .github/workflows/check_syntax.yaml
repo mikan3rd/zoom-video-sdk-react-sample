@@ -38,3 +38,5 @@ jobs:
       # - run: yarn lint
 
       - run: yarn build
+        env:
+          SKIP_PREFLIGHT_CHECK: true
