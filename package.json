@@ -3,7 +3,7 @@
   "version": "1.3.0",
   "private": true,
   "engines": {
-    "node": "16.16"
+    "node": "18.18"
   },
   "scripts": {
     "start": "react-app-rewired start",
