@@ -29,7 +29,7 @@
     "react-dom": "18.2.0",
     "react-router-dom": "5.3.3",
     "react-scripts": "4.0.3",
-    "web-vitals": "2.1.4"
+    "web-vitals": "3.5.2"
   },
   "devDependencies": {
     "@emotion/eslint-plugin": "11.7.0",
