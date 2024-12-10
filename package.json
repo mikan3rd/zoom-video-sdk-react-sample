@@ -45,7 +45,7 @@
     "copy-webpack-plugin": "6.4.1",
     "customize-cra": "1.0.0",
     "eslint": "8.20.0",
-    "eslint-config-alloy": "4.6.2",
+    "eslint-config-alloy": "5.1.2",
     "eslint-config-prettier": "8.5.0",
     "eslint-import-resolver-typescript": "3.2.7",
     "eslint-import-resolver-webpack": "0.13.2",
